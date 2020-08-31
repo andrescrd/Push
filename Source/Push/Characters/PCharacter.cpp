@@ -29,7 +29,7 @@ APCharacter::APCharacter()
 
 	PushZoneComp = CreateDefaultSubobject<UBoxComponent>(TEXT("PushZoneComp"));
 	PushZoneComp->SetBoxExtent(FVector(32.f));
-	PushZoneComp->SetRelativeLocation(FVector(50.f, 0, 0));
+	PushZoneComp->SetRelativeLocation(FVector(80.f, 0, 0));
 	PushZoneComp->SetupAttachment(RootComponent);
 
 	HealthComp = CreateDefaultSubobject<UPHealthComponent>(TEXT("HealthComp"));

@@ -8,6 +8,7 @@ APPowerup::APPowerup()
 {
 	Interval = 0.f;
 	TotalNroTick = 0;
+	bIsActive=true;
 }
 
 // Called when the game starts or when spawned
@@ -32,6 +33,7 @@ void APPowerup::TickPowerup()
 void APPowerup::ActivatedPowerup(AActor* ActivatorActor)
 {
 	OnActivated(ActivatorActor);
+	bIsActive = false;
 
 	if (Interval > 0)
 	{
@@ -41,4 +43,9 @@ void APPowerup::ActivatedPowerup(AActor* ActivatorActor)
 	{
 		TickPowerup();
 	}
+}
+
+bool APPowerup::IsActive() 
+{
+	return bIsActive;
 }

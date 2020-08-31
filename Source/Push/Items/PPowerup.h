@@ -24,11 +24,14 @@ protected:
 	float Interval;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 TotalNroTick;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsActive;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void TickPowerup();
+
 public:
 	void ActivatedPowerup(class AActor* ActivatorActor);
 
@@ -38,4 +41,7 @@ public:
 	void OnPowerupTicked();
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnExpired();
+
+	UFUNCTION(BlueprintCallable)
+	bool IsActive();
 };
