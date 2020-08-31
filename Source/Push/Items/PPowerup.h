@@ -43,5 +43,5 @@ public:
 	void OnExpired();
 
 	UFUNCTION(BlueprintCallable)
-	bool IsActive();
+	bool GetIsActive();
 };

@@ -45,7 +45,7 @@ void APPowerup::ActivatedPowerup(AActor* ActivatorActor)
 	}
 }
 
-bool APPowerup::IsActive() 
+bool APPowerup::GetIsActive() 
 {
 	return bIsActive;
 }
