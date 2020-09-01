@@ -47,11 +47,14 @@ EGameState APGameMode::GetCurrentGameState() const
 
 int32 APGameMode::GetNumberOfCharacters()
 {
-    return AllCharacters.Num() + MaxNumberOfBots;
+    return AllCharacters.Num();
 }
 
 void APGameMode::SetCurrentGameState(EGameState NewState)
 {
+    if (CurrentGameState == NewState)
+        return;
+
     CurrentGameState = NewState;
     HandleGameState(CurrentGameState);
 
@@ -115,7 +118,7 @@ void APGameMode::HandleGameState(EGameState NewState)
     case EGameState::Won:
     {
         APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0);
-    
+
         if (PC)
         {
             PC->SetCinematicMode(true, false, false, true, true);
