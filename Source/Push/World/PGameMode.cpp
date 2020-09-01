@@ -9,7 +9,7 @@
 
 APGameMode::APGameMode()
 {
-    CurrentGameState = EGameState::Preparing;
+    CurrentGameState = EGameState::Unknow;
     MaxNumberOfBots = 3;
 
     PrimaryActorTick.bStartWithTickEnabled = true;
@@ -62,6 +62,14 @@ void APGameMode::SetCurrentGameState(EGameState NewState)
     OnGameStateChange(CurrentGameState);
 }
 
+void APGameMode::DisableAllCharacterMovement(TArray<class APCharacter *> Characters)
+{
+    for (int32 i = 0; i < Characters.Num(); i++)
+    {
+        Characters[i]->GetCharacterMovement()->DisableMovement();
+    }
+}
+
 void APGameMode::InitPlayGame()
 {
     SetCurrentGameState(EGameState::Playing);
@@ -98,7 +106,6 @@ void APGameMode::HandleGameState(EGameState NewState)
         GetWorldTimerManager().SetTimer(TimerHandle_InitGame, this, &APGameMode::InitPlayGame, 3.f, false);
     }
     break;
-        SetCurrentGameState(EGameState::Playing);
     case EGameState::Playing:
     {
         TArray<AActor *> Actors;
@@ -116,24 +123,16 @@ void APGameMode::HandleGameState(EGameState NewState)
     break;
 
     case EGameState::Won:
+    case EGameState::Draw:
+    case EGameState::GameOver:
     {
+        DisableAllCharacterMovement(AllCharacters);
+
         APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0);
 
         if (PC)
         {
             PC->SetCinematicMode(true, false, false, true, true);
-        }
-    }
-    break;
-    case EGameState::Draw:
-
-        break;
-
-    case EGameState::GameOver:
-    {
-        for (int32 i = 0; i < AllCharacters.Num(); i++)
-        {
-            AllCharacters[i]->GetCharacterMovement()->DisableMovement();
         }
     }
     break;

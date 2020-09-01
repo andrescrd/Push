@@ -42,6 +42,7 @@ protected:
 	bool CheckIsAnyCharacterAlive();	
 	bool IsPlayerAlive();
 	void SetCurrentGameState(EGameState NewState);
+	void DisableAllCharacterMovement(TArray<class APCharacter *> Characters);
 
 	void InitPlayGame();
 
