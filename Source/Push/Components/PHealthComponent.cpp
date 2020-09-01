@@ -29,6 +29,11 @@ void UPHealthComponent::HandleTakeAnyDamage(AActor *DamagedActor, float Damage, 
 	OnHealthChanged.Broadcast(this, Lifes, DamageType, InstigatedBy, DamageCauser);
 }
 
+int32 UPHealthComponent::GetLifes() 
+{
+	return Lifes;
+}
+
 void UPHealthComponent::AddLifes(int NumberLifes)
 {
 	if (Lifes <= 0 || NumberLifes <= 0)

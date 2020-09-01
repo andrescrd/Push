@@ -8,30 +8,32 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FOnHealthChangedSignature, UPHealthComponent *, HealthComp, int, Lifes, const class UDamageType *, DamageType, class AController *, InstigatedBy, AActor *, DamageCauser);
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class PUSH_API UPHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	UPHealthComponent();
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	int Lifes;
+	int32 Lifes;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int DefaultLifes;
+	int32 DefaultLifes;
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser );		
+	void HandleTakeAnyDamage(AActor *DamagedActor, float Damage, const class UDamageType *DamageType, class AController *InstigatedBy, AActor *DamageCauser);
 
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChangedSignature OnHealthChanged;
 
 	UFUNCTION(BlueprintCallable)
-	void AddLifes(int NumberLifes);
+	int32 GetLifes();
+	UFUNCTION(BlueprintCallable)
+	void AddLifes(int32 NumberLifes);
 };

@@ -57,3 +57,14 @@ void APGameMode::HandleGameState(EGameState NewState)
         break;
     }
 }
+
+bool APGameMode::CheckIsAnyAlive()
+{
+    return false;
+}
+
+bool APGameMode::IsPlayerAlive()
+{
+    APCharacter *CurrentPlayer = Cast<APCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+    return CurrentPlayer ? CurrentPlayer->GetIsAlive() : false;
+}

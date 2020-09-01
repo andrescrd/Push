@@ -50,6 +50,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float PushForce;
 
+UFUNCTION(BlueprintCallable)
+	bool GetIsAlive();
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPush(class ACharacter* ActorPushed);
 };

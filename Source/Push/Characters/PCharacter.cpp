@@ -57,6 +57,7 @@ void APCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponen
 	PlayerInputComponent->BindAction("Push", EInputEvent::IE_Pressed, this, &APCharacter::Push);
 }
 
+
 void APCharacter::MoveForward(float Value)
 {
 	FVector Forward = GetActorForwardVector();
@@ -92,4 +93,9 @@ void APCharacter::Push()
 void APCharacter::HandleHealthDamage(UPHealthComponent * OwnerHealthComp, int Lifes, const class UDamageType * DamageType, class AController * InstigatedBy, AActor * DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("character was hurted"));
+}
+
+bool APCharacter::GetIsAlive() 
+{
+	return HealthComp &&  HealthComp->GetLifes() > 0;
 }

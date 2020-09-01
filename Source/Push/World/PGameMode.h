@@ -34,6 +34,8 @@ private:
 protected:
 	virtual void BeginPlay() override;
 	void HandleGameState(EGameState NewState);
+	bool CheckIsAnyAlive();	
+	bool IsPlayerAlive();
 
 public:
 	UFUNCTION(BlueprintCallable)
