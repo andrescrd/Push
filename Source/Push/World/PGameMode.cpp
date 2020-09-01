@@ -9,9 +9,11 @@
 APGameMode::APGameMode()
 {
     CurrentGameState = EGameState::Playing;
+    MaxNumberOfBots = 3;
 
-    SetActorTickEnabled(true);
-    SetActorTickInterval(1);
+    PrimaryActorTick.bStartWithTickEnabled = true;
+    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.TickInterval = 1.f;
 }
 
 void APGameMode::BeginPlay()
@@ -32,7 +34,7 @@ void APGameMode::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (!CheckIsAnyPlayerAlive())
+    if (!CheckIsAnyCharacterAlive())
     {
         SetCurrentGameState(EGameState::Won);
     }
@@ -47,7 +49,7 @@ EGameState APGameMode::GetCurrentGameState() const
     return CurrentGameState;
 }
 
-int32 APGameMode::GetNumberOfPlayers()
+int32 APGameMode::GetNumberOfCharacters()
 {
     return AllCharacters.Num();
 }
@@ -61,7 +63,7 @@ void APGameMode::SetCurrentGameState(EGameState NewState)
     OnGameStateChange(CurrentGameState);
 }
 
-bool APGameMode::CheckIsAnyPlayerAlive()
+bool APGameMode::CheckIsAnyCharacterAlive()
 {
     bool IsAnyAlive = false;
 
@@ -117,4 +119,10 @@ void APGameMode::HandleGameState(EGameState NewState)
     default:
         break;
     }
+}
+
+void APGameMode::AddNewCharacterBot(class APCharacter *NewActor)
+{
+    if (NewActor)
+        AllCharacters.AddUnique(NewActor);
 }

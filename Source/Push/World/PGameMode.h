@@ -28,14 +28,17 @@ public:
 	APGameMode();
 
 protected:
+
 	UPROPERTY(BlueprintReadOnly)
-	EGameState CurrentGameState;
-	
+	EGameState CurrentGameState;	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 MaxNumberOfBots;
+
 	TArray<class APCharacter *> AllCharacters;
 
-
 	void HandleGameState(EGameState NewState);
-	bool CheckIsAnyPlayerAlive();	
+	bool CheckIsAnyCharacterAlive();	
+
 	bool IsPlayerAlive();
 	void SetCurrentGameState(EGameState NewState);
 
@@ -46,9 +49,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
 	UFUNCTION(BlueprintCallable)
-	int32 GetNumberOfPlayers();
+	int32 GetNumberOfCharacters();
+	UFUNCTION(BlueprintCallable)
+	void AddNewCharacterBot(class APCharacter* NewActor);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnGameStateChange(EGameState NewState);
-	
+	void OnGameStateChange(EGameState NewState);	
 };
