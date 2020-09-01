@@ -3,11 +3,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "Push/Characters/PCharacter.h"
 #include "Engine/World.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
 
 APGameMode::APGameMode()
 {
     CurrentGameState = EGameState::Playing;
 
+    SetActorTickEnabled(true);
     SetActorTickInterval(1);
 }
 
@@ -31,10 +34,9 @@ void APGameMode::Tick(float DeltaTime)
 
     if (!CheckIsAnyPlayerAlive())
     {
-        SetCurrentGameState(EGameState::Won)
+        SetCurrentGameState(EGameState::Won);
     }
-
-    if (IsPlayerAlive())
+    else if (!IsPlayerAlive())
     {
         SetCurrentGameState(EGameState::GameOver);
     }
@@ -82,20 +84,26 @@ void APGameMode::HandleGameState(EGameState NewState)
         break;
 
     case EGameState::Won:
-        APlayerController *PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-        if (PlayerController)
+    {
+        APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0);
+        if (PC)
         {
-            PlayerController->SetCinematicMode(true, false, false, true, true);
+            PC->SetCinematicMode(true, false, false, true, true);
         }
-        break;
+    }
+    break;
     case EGameState::Draw:
 
         break;
 
     case EGameState::GameOver:
-
-        /* code */
-        break;
+    {
+        for (int32 i = 0; i < AllCharacters.Num(); i++)
+        {
+            AllCharacters[i]->GetCharacterMovement()->DisableMovement();
+        }
+    }
+    break;
 
     case EGameState::Unknow:
     default:
