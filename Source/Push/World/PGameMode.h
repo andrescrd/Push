@@ -6,16 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "PGameMode.generated.h"
 
-UENUM(BlueprintType)
-enum class EGameState : uint8
-{
-	Preparing,	
-	Playing,
-	Won,
-	Draw,
-	GameOver,
-	Unknow
-};
 
 /**
  * 
