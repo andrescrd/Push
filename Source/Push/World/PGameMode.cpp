@@ -47,6 +47,11 @@ EGameState APGameMode::GetCurrentGameState() const
     return CurrentGameState;
 }
 
+int32 APGameMode::GetNumberOfPlayers()
+{
+    return AllCharacters.Num();
+}
+
 void APGameMode::SetCurrentGameState(EGameState NewState)
 {
     CurrentGameState = NewState;

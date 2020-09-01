@@ -34,7 +34,7 @@ private:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	
+
 	void HandleGameState(EGameState NewState);
 	bool CheckIsAnyPlayerAlive();	
 	bool IsPlayerAlive();
@@ -42,6 +42,8 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
+	UFUNCTION(BlueprintCallable)
+	int32 GetNumberOfPlayers();
 
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentGameState(EGameState NewState);
