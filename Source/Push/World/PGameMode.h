@@ -29,7 +29,7 @@ public:
 
 private:
 	EGameState CurrentGameState;
-	TArray<class PCharacter *> AllCharacters;
+	TArray<class APCharacter *> AllCharacters;
 
 protected:
 	virtual void BeginPlay() override;

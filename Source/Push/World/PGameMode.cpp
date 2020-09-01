@@ -15,6 +15,12 @@ void APGameMode::BeginPlay()
 
     TArray<AActor *> Actors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), APCharacter::StaticClass(), Actors);
+
+    for (auto Actor : Actors)
+    {
+        if (APCharacter *CurrentCharacter = Cast<APCharacter>(Actor))
+            AllCharacters.AddUnique(CurrentCharacter);
+    }
 }
 
 EGameState APGameMode::GetCurrentGameState() const
