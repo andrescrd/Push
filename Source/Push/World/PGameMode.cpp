@@ -56,6 +56,9 @@ void APGameMode::SetCurrentGameState(EGameState NewState)
 {
     CurrentGameState = NewState;
     HandleGameState(CurrentGameState);
+
+    //call blueprint event
+    OnGameStateChange(CurrentGameState);
 }
 
 bool APGameMode::CheckIsAnyPlayerAlive()

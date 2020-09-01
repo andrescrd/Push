@@ -27,24 +27,28 @@ class PUSH_API APGameMode : public AGameModeBase
 public:
 	APGameMode();
 
-private:
+protected:
+	UPROPERTY(BlueprintReadOnly)
 	EGameState CurrentGameState;
+	
 	TArray<class APCharacter *> AllCharacters;
 
-protected:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 
 	void HandleGameState(EGameState NewState);
 	bool CheckIsAnyPlayerAlive();	
 	bool IsPlayerAlive();
+	void SetCurrentGameState(EGameState NewState);
 
 public:
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
 	UFUNCTION(BlueprintCallable)
 	int32 GetNumberOfPlayers();
 
-	UFUNCTION(BlueprintCallable)
-	void SetCurrentGameState(EGameState NewState);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnGameStateChange(EGameState NewState);
+	
 };
