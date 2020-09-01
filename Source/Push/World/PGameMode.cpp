@@ -5,10 +5,11 @@
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "TimerManager.h"
 
 APGameMode::APGameMode()
 {
-    CurrentGameState = EGameState::Playing;
+    CurrentGameState = EGameState::Preparing;
     MaxNumberOfBots = 3;
 
     PrimaryActorTick.bStartWithTickEnabled = true;
@@ -19,20 +20,15 @@ APGameMode::APGameMode()
 void APGameMode::BeginPlay()
 {
     Super::BeginPlay();
-
-    TArray<AActor *> Actors;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), APCharacter::StaticClass(), Actors);
-
-    for (auto Actor : Actors)
-    {
-        if (APCharacter *CurrentCharacter = Cast<APCharacter>(Actor))
-            AllCharacters.AddUnique(CurrentCharacter);
-    }
+    SetCurrentGameState(EGameState::Preparing);
 }
 
 void APGameMode::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    if (CurrentGameState == EGameState::Preparing)
+        return;
 
     if (!CheckIsAnyCharacterAlive())
     {
@@ -51,7 +47,7 @@ EGameState APGameMode::GetCurrentGameState() const
 
 int32 APGameMode::GetNumberOfCharacters()
 {
-    return AllCharacters.Num();
+    return AllCharacters.Num() + MaxNumberOfBots;
 }
 
 void APGameMode::SetCurrentGameState(EGameState NewState)
@@ -61,6 +57,11 @@ void APGameMode::SetCurrentGameState(EGameState NewState)
 
     //call blueprint event
     OnGameStateChange(CurrentGameState);
+}
+
+void APGameMode::InitPlayGame()
+{
+    SetCurrentGameState(EGameState::Playing);
 }
 
 bool APGameMode::CheckIsAnyCharacterAlive()
@@ -89,13 +90,32 @@ void APGameMode::HandleGameState(EGameState NewState)
 {
     switch (NewState)
     {
+    case EGameState::Preparing:
+    {
+        GetWorldTimerManager().SetTimer(TimerHandle_InitGame, this, &APGameMode::InitPlayGame, 3.f, false);
+    }
+    break;
+        SetCurrentGameState(EGameState::Playing);
     case EGameState::Playing:
-        /* code */
-        break;
+    {
+        TArray<AActor *> Actors;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), APCharacter::StaticClass(), Actors);
+
+        for (auto Actor : Actors)
+        {
+            if (APCharacter *CurrentCharacter = Cast<APCharacter>(Actor))
+            {
+                CurrentCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+                AllCharacters.AddUnique(CurrentCharacter);
+            }
+        }
+    }
+    break;
 
     case EGameState::Won:
     {
         APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0);
+    
         if (PC)
         {
             PC->SetCinematicMode(true, false, false, true, true);
@@ -119,10 +139,4 @@ void APGameMode::HandleGameState(EGameState NewState)
     default:
         break;
     }
-}
-
-void APGameMode::AddNewCharacterBot(class APCharacter *NewActor)
-{
-    if (NewActor)
-        AllCharacters.AddUnique(NewActor);
 }

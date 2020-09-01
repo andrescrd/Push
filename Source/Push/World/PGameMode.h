@@ -9,9 +9,10 @@
 UENUM(BlueprintType)
 enum class EGameState : uint8
 {
+	Preparing,	
+	Playing,
 	Won,
 	Draw,
-	Playing,
 	GameOver,
 	Unknow
 };
@@ -28,6 +29,7 @@ public:
 	APGameMode();
 
 protected:
+	FTimerHandle TimerHandle_InitGame;
 
 	UPROPERTY(BlueprintReadOnly)
 	EGameState CurrentGameState;	
@@ -38,9 +40,10 @@ protected:
 
 	void HandleGameState(EGameState NewState);
 	bool CheckIsAnyCharacterAlive();	
-
 	bool IsPlayerAlive();
 	void SetCurrentGameState(EGameState NewState);
+
+	void InitPlayGame();
 
 public:
 	virtual void BeginPlay() override;
@@ -50,8 +53,7 @@ public:
 	EGameState GetCurrentGameState() const;
 	UFUNCTION(BlueprintCallable)
 	int32 GetNumberOfCharacters();
-	UFUNCTION(BlueprintCallable)
-	void AddNewCharacterBot(class APCharacter* NewActor);
+	
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnGameStateChange(EGameState NewState);	
