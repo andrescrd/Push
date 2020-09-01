@@ -33,8 +33,10 @@ private:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	
 	void HandleGameState(EGameState NewState);
-	bool CheckIsAnyAlive();	
+	bool CheckIsAnyPlayerAlive();	
 	bool IsPlayerAlive();
 
 public:

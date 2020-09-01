@@ -7,6 +7,8 @@
 APGameMode::APGameMode()
 {
     CurrentGameState = EGameState::Playing;
+
+    SetActorTickInterval(1);
 }
 
 void APGameMode::BeginPlay()
@@ -23,6 +25,21 @@ void APGameMode::BeginPlay()
     }
 }
 
+void APGameMode::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if (!CheckIsAnyPlayerAlive())
+    {
+        SetCurrentGameState(EGameState::Won)
+    }
+
+    if (IsPlayerAlive())
+    {
+        SetCurrentGameState(EGameState::GameOver);
+    }
+}
+
 EGameState APGameMode::GetCurrentGameState() const
 {
     return CurrentGameState;
@@ -31,6 +48,29 @@ EGameState APGameMode::GetCurrentGameState() const
 void APGameMode::SetCurrentGameState(EGameState NewState)
 {
     CurrentGameState = NewState;
+    HandleGameState(CurrentGameState);
+}
+
+bool APGameMode::CheckIsAnyPlayerAlive()
+{
+    bool IsAnyAlive = false;
+
+    for (int32 i = 0; i < AllCharacters.Num(); i++)
+    {
+        if (AllCharacters[i]->GetIsAlive() && !AllCharacters[i]->IsPlayerControlled())
+        {
+            IsAnyAlive = true;
+            break;
+        }
+    }
+
+    return IsAnyAlive;
+}
+
+bool APGameMode::IsPlayerAlive()
+{
+    APCharacter *CurrentPlayer = Cast<APCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+    return CurrentPlayer ? CurrentPlayer->GetIsAlive() : false;
 }
 
 void APGameMode::HandleGameState(EGameState NewState)
@@ -42,13 +82,18 @@ void APGameMode::HandleGameState(EGameState NewState)
         break;
 
     case EGameState::Won:
-        /* code */
+        APlayerController *PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+        if (PlayerController)
+        {
+            PlayerController->SetCinematicMode(true, false, false, true, true);
+        }
         break;
     case EGameState::Draw:
-        /* code */
+
         break;
 
     case EGameState::GameOver:
+
         /* code */
         break;
 
@@ -56,15 +101,4 @@ void APGameMode::HandleGameState(EGameState NewState)
     default:
         break;
     }
-}
-
-bool APGameMode::CheckIsAnyAlive()
-{
-    return false;
-}
-
-bool APGameMode::IsPlayerAlive()
-{
-    APCharacter *CurrentPlayer = Cast<APCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-    return CurrentPlayer ? CurrentPlayer->GetIsAlive() : false;
 }
