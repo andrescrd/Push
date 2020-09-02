@@ -6,6 +6,17 @@
 #include "GameFramework/GameModeBase.h"
 #include "PGameMode.generated.h"
 
+UENUM(BlueprintType)
+enum class EGameState : uint8
+{
+	Preparing UMETA(DisplayName = "Preparing"),
+	Playing UMETA(DisplayName = "Playing"),
+	Won UMETA(DisplayName = "Won"),
+	Draw UMETA(DisplayName = "Draw"),
+	GameOver UMETA(DisplayName = "GameOver"),
+	Unknow UMETA(DisplayName = "Unknow")
+};
+
 
 /**
  * 
@@ -22,14 +33,14 @@ protected:
 	FTimerHandle TimerHandle_InitGame;
 
 	UPROPERTY(BlueprintReadOnly)
-	EGameState CurrentGameState;	
+	EGameState CurrentGameState;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 MaxNumberOfBots;
 
 	TArray<class APCharacter *> AllCharacters;
 
 	void HandleGameState(EGameState NewState);
-	bool CheckIsAnyCharacterAlive();	
+	bool CheckIsAnyCharacterAlive();
 	bool IsPlayerAlive();
 	void SetCurrentGameState(EGameState NewState);
 	void DisableAllCharacterMovement(TArray<class APCharacter *> Characters);
@@ -44,8 +55,7 @@ public:
 	EGameState GetCurrentGameState() const;
 	UFUNCTION(BlueprintCallable)
 	int32 GetNumberOfCharacters();
-	
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnGameStateChange(EGameState NewState);	
+	void OnGameStateChange(EGameState NewState);
 };

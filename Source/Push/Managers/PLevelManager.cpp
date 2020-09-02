@@ -4,38 +4,35 @@
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
 
-TArray<FName> APLevelManager::GetLevels()
+TArray<FLevelStruct> APLevelManager::GetLevels()
 {
     return Levels;
 }
 
-FName APLevelManager::GetFirstLavel() 
+FLevelStruct APLevelManager::GetFirstLavel()
 {
     return Levels[0];
 }
 
-FName APLevelManager::GetNextLevel() 
-{    
+FLevelStruct APLevelManager::GetNextLevel()
+{
+    FLevelStruct Level;
+
     for (int32 index = 0; index < Levels.Num(); index++)
     {
-        if(CurrentLevel.IsEqual(Levels[index]))
+        if (CurrentLevel.LevelName.IsEqual(Levels[index].LevelName))
         {
-            if (index + 1 == Levels.Num())
-            {
-             return Levels[0];
-            }
-            else
-            {
-                return Levels[index +1];
-            }
+            Level = (index + 1 == Levels.Num()) ? Levels[0] : Levels[index + 1];
+            break;
         }
-    }    
+    }
 
+    return Level;
 }
 
 void APLevelManager::LoadLevel(FName LevelNameToLoad)
 {
     // FName FullName = TEXT("Map/");
     // FullName.AppendString(LevelNameToLoad.ToString());
-    UGameplayStatics::OpenLevel(GetWorld(),LevelNameToLoad, true);
+    UGameplayStatics::OpenLevel(GetWorld(), LevelNameToLoad, true);
 }

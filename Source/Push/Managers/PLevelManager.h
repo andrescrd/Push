@@ -6,7 +6,30 @@
 #include "GameFramework/Info.h"
 #include "PLevelManager.generated.h"
 
+UENUM(BlueprintType)
+enum class ELevelState : uint8
+{	
+	Locked,
+	Unlocked
+};
 
+USTRUCT(BlueprintType)
+struct FLevelStruct
+{
+     GENERATED_USTRUCT_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName LevelName;	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ELevelState State;
+
+	FLevelStruct()
+	{
+		LevelName = TEXT("NONE");
+		State = ELevelState::Locked;
+	}
+};
 
 /**
  * 
@@ -18,17 +41,17 @@ class PUSH_API APLevelManager : public AInfo
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-	FName CurrentLevel;
-	UPROPERTY(EditDefaultsOnly)
-	TArray<FName> Levels;
+	FLevelStruct CurrentLevel;
+	UPROPERTY(EditAnywhere)
+	TArray<FLevelStruct> Levels;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	void LoadLevel(FName LevelNameToLoad);
 	UFUNCTION(BlueprintCallable)
-	TArray<FName> GetLevels();
+	TArray<FLevelStruct> GetLevels();
 	UFUNCTION(BlueprintCallable)
-	FName GetFirstLavel();
+	FLevelStruct GetFirstLavel();
 	UFUNCTION(BlueprintCallable)
-	FName GetNextLevel();
+	FLevelStruct GetNextLevel();
 };
