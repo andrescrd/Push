@@ -40,7 +40,7 @@ void APLevelManager::LoadNextLevel()
     {
         if (NextLevel.LevelName.IsEqual(Levels[index].LevelName))
         {
-            UGameplayStatics::OpenLevel(this, NextLevel.LevelName);
+            UGameplayStatics::OpenLevel(GetWorld(), NextLevel.LevelName);
             break;
         }
     }
