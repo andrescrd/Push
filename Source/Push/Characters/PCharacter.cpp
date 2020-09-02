@@ -21,15 +21,19 @@ APCharacter::APCharacter()
 
 	SpringComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringComp"));
 	SpringComp->SetupAttachment(RootComponent);
-	SpringComp->SetRelativeRotation(FRotator(-30,0 , 0));
+	SpringComp->SetRelativeRotation(FRotator(-30, 0, 0));
+	SpringComp->bEnableCameraLag = true;
+	SpringComp->bEnableCameraRotationLag = true;
+	SpringComp->CameraLagSpeed = 5.f;
+	SpringComp->CameraRotationLagSpeed = 5.f;
 	SpringComp->TargetArmLength = 800.f;
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringComp, USpringArmComponent::SocketName);
 
 	PushZoneComp = CreateDefaultSubobject<UBoxComponent>(TEXT("PushZoneComp"));
-	PushZoneComp->SetBoxExtent(FVector(32.f));
-	PushZoneComp->SetRelativeLocation(FVector(80.f, 0, 0));
+	PushZoneComp->SetBoxExtent(FVector(100.f));
+	PushZoneComp->SetRelativeLocation(FVector(0, 0, 0));
 	PushZoneComp->SetupAttachment(RootComponent);
 
 	HealthComp = CreateDefaultSubobject<UPHealthComponent>(TEXT("HealthComp"));
@@ -40,8 +44,8 @@ void APCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(HealthComp)
-		HealthComp->OnHealthChanged.AddDynamic(this,&APCharacter::HandleHealthDamage);
+	if (HealthComp)
+		HealthComp->OnHealthChanged.AddDynamic(this, &APCharacter::HandleHealthDamage);
 }
 
 // Called to bind functionality to input
@@ -56,7 +60,6 @@ void APCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &APCharacter::StopJumping);
 	PlayerInputComponent->BindAction("Push", EInputEvent::IE_Pressed, this, &APCharacter::Push);
 }
-
 
 void APCharacter::MoveForward(float Value)
 {
@@ -90,12 +93,12 @@ void APCharacter::Push()
 	}
 }
 
-void APCharacter::HandleHealthDamage(UPHealthComponent * OwnerHealthComp, int Lifes, const class UDamageType * DamageType, class AController * InstigatedBy, AActor * DamageCauser)
+void APCharacter::HandleHealthDamage(UPHealthComponent *OwnerHealthComp, int Lifes, const class UDamageType *DamageType, class AController *InstigatedBy, AActor *DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("character was hurted"));
 }
 
-bool APCharacter::GetIsAlive() 
+bool APCharacter::GetIsAlive()
 {
-	return HealthComp &&  HealthComp->GetLifes() > 0;
+	return HealthComp && HealthComp->GetLifes() > 0;
 }
