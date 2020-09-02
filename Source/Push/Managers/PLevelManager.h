@@ -8,7 +8,7 @@
 
 UENUM(BlueprintType)
 enum class ELevelState : uint8
-{	
+{
 	Locked,
 	Unlocked
 };
@@ -16,11 +16,11 @@ enum class ELevelState : uint8
 USTRUCT(BlueprintType)
 struct FLevelStruct
 {
-     GENERATED_USTRUCT_BODY()
+	GENERATED_USTRUCT_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName LevelName;	
+	FName LevelName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ELevelState State;
 
@@ -39,6 +39,9 @@ class PUSH_API APLevelManager : public AInfo
 {
 	GENERATED_BODY()
 
+private:
+	FName CleanLevelString(class UObject *context);
+
 protected:
 	UPROPERTY(VisibleAnywhere)
 	FLevelStruct CurrentLevel;
@@ -54,4 +57,6 @@ public:
 	FLevelStruct GetFirstLavel();
 	UFUNCTION(BlueprintCallable)
 	FLevelStruct GetNextLevel();
+	UFUNCTION(BlueprintCallable)
+	void LoadNextLevel();
 };
