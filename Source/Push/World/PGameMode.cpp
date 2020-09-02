@@ -103,11 +103,17 @@ void APGameMode::HandleGameState(EGameState NewState)
     {
     case EGameState::Preparing:
     {
-        GetWorldTimerManager().SetTimer(TimerHandle_InitGame, this, &APGameMode::InitPlayGame, 3.f, false);
+        if (APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0))
+            PC->SetCinematicMode(true, false, false, true, true);
+
+        GetWorldTimerManager().SetTimer(TimerHandle_InitGame, this, &APGameMode::InitPlayGame, 5.f, false);
     }
     break;
     case EGameState::Playing:
     {
+        if (APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0))
+            PC->SetCinematicMode(false, false, false, true, true);
+
         TArray<AActor *> Actors;
         UGameplayStatics::GetAllActorsOfClass(GetWorld(), APCharacter::StaticClass(), Actors);
 
@@ -128,12 +134,8 @@ void APGameMode::HandleGameState(EGameState NewState)
     {
         DisableAllCharacterMovement(AllCharacters);
 
-        APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0);
-
-        if (PC)
-        {
+        if (APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0))
             PC->SetCinematicMode(true, false, false, true, true);
-        }
     }
     break;
 
