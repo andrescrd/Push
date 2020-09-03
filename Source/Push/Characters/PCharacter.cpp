@@ -84,7 +84,9 @@ void APCharacter::Push()
 
 		if (SingleActor != this)
 		{
-			FVector LunchVelocity = GetActorForwardVector() * PushForce;
+			FRotator Direction = GetActorRotation();
+			Direction.Pitch += 45.f;
+			FVector LunchVelocity = Direction.Vector() * PushForce;
 			SingleActor->LaunchCharacter(LunchVelocity, true, true);
 
 			//Call to BP event
