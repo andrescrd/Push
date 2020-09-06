@@ -85,7 +85,7 @@ void APCharacter::Push()
 		if (SingleActor != this)
 		{
 			FRotator Direction = GetActorRotation();
-			Direction.Pitch += 45.f;
+			Direction.Pitch += 20.f;
 			FVector LunchVelocity = Direction.Vector() * PushForce;
 			SingleActor->LaunchCharacter(LunchVelocity, true, true);
 
