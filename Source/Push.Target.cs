@@ -5,10 +5,17 @@ using System.Collections.Generic;
 
 public class PushTarget : TargetRules
 {
-	public PushTarget( TargetInfo Target) : base(Target)
-	{
-		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "Push" } );
-	}
+    public PushTarget(TargetInfo Target) : base(Target)
+    {
+        Type = TargetType.Game;
+        DefaultBuildSettings = BuildSettingsVersion.V2;
+        ExtraModuleNames.AddRange(new string[] { "Push" });
+
+        if (Target.Platform == UnrealTargetPlatform.Android)
+        {
+            ExtraModuleNames.Add("OnlineSubsystemGooglePlay");
+            ExtraModuleNames.Add("OnlineSubsystem");
+            ExtraModuleNames.Add("AndroidAdvertising");
+        }
+    }
 }
