@@ -16,6 +16,8 @@ public:
 	APCharacter();
 
 protected:
+	FTimerHandle TimerHandle_StartPush;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UCameraComponent *CameraComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -33,6 +35,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void Push();
+	UFUNCTION(BlueprintCallable)
+	void StartPush();	
 
 	UFUNCTION()
 	void HandleHealthDamage(class UPHealthComponent *OwnerHealthComp, int Lifes, const class UDamageType *DamageType, class AController *InstigatedBy, AActor *DamageCauser);
@@ -41,7 +45,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
-
 	//Properties
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float RotationVelocity;
@@ -49,10 +52,14 @@ public:
 	float Velocity;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float PushForce;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsPushing;
 
-UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 	bool GetIsAlive();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPush(class ACharacter* ActorPushed);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnDie();
 };

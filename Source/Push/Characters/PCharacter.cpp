@@ -9,6 +9,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Push/Components/PHealthComponent.h"
 #include "Engine/World.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "TimerManager.h"
 
 // Sets default values
 APCharacter::APCharacter()
@@ -16,6 +18,7 @@ APCharacter::APCharacter()
 	RotationVelocity = 45.f;
 	Velocity = 1000.f;
 	PushForce = 1000.f;
+	IsPushing = false;
 
 	GetCharacterMovement()->MaxWalkSpeed = Velocity;
 
@@ -57,8 +60,7 @@ void APCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponen
 	PlayerInputComponent->BindAxis("Rotate", this, &APCharacter::Rotate);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &APCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &APCharacter::StopJumping);
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &APCharacter::StopJumping);
-	PlayerInputComponent->BindAction("Push", EInputEvent::IE_Pressed, this, &APCharacter::Push);
+	PlayerInputComponent->BindAction("Push", EInputEvent::IE_Pressed, this, &APCharacter::StartPush);
 }
 
 void APCharacter::MoveForward(float Value)
@@ -73,8 +75,20 @@ void APCharacter::Rotate(float Value)
 	AddControllerYawInput(NewRotation);
 }
 
+void APCharacter::StartPush()
+{
+	if (!IsPushing)
+	{
+		GetWorldTimerManager().SetTimer(TimerHandle_StartPush, this, &APCharacter::Push, 0.5f, false);
+	}
+
+	IsPushing = true;
+}
+
 void APCharacter::Push()
 {
+	IsPushing = false;
+
 	TArray<AActor *> OverlppedActors;
 	PushZoneComp->GetOverlappingActors(OverlppedActors, ACharacter::StaticClass());
 
@@ -85,7 +99,7 @@ void APCharacter::Push()
 		if (SingleActor != this)
 		{
 			FRotator Direction = GetActorRotation();
-			Direction.Pitch += 20.f;
+			Direction.Pitch += 30.f;
 			FVector LunchVelocity = Direction.Vector() * PushForce;
 			SingleActor->LaunchCharacter(LunchVelocity, true, true);
 
@@ -98,6 +112,16 @@ void APCharacter::Push()
 void APCharacter::HandleHealthDamage(UPHealthComponent *OwnerHealthComp, int Lifes, const class UDamageType *DamageType, class AController *InstigatedBy, AActor *DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("character was hurted"));
+
+	if (!GetIsAlive())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Character Die"));
+		// GetCharacterMovement()->StopMovementImmediately();
+		// GetCharacterMovement()->DisableMovement();
+		// GetMesh()->SetSimulatePhysics(true);
+		//Call to BP event
+		OnDie();
+	}
 }
 
 bool APCharacter::GetIsAlive()
