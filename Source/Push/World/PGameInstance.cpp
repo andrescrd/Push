@@ -5,13 +5,28 @@
 
 void UPGameInstance::Init()
 {
-    Super::Init();    
+    Super::Init();
 
     if (LevelManagerClass)
-        LevelManager = NewObject<APLevelManager>(this,LevelManagerClass, TEXT("LevelManager"));
+        LevelManager = NewObject<APLevelManager>(this, LevelManagerClass, TEXT("LevelManager"));
 }
 
 class APLevelManager *UPGameInstance::GetLevelManager() const
 {
     return LevelManager;
+}
+
+void UPGameInstance::SetPlayerClass(TSubclassOf<APCharacter> CharacterClass)
+{
+    PlayerSetup.CharacterClass = CharacterClass;
+}
+
+void UPGameInstance::SetLevel(int Level)
+{
+    PlayerSetup.Level = Level;
+}
+
+FPlayerSetup UPGameInstance::GetPlayerSetup() 
+{
+    return PlayerSetup;
 }
