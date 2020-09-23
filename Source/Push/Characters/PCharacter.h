@@ -48,8 +48,6 @@ public:
 	//Properties
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float RotationVelocity;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float Velocity;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float PushForce;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

@@ -16,11 +16,8 @@
 APCharacter::APCharacter()
 {
 	RotationVelocity = 45.f;
-	Velocity = 1000.f;
 	PushForce = 1000.f;
 	IsPushing = false;
-
-	GetCharacterMovement()->MaxWalkSpeed = Velocity;
 
 	SpringComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringComp"));
 	SpringComp->SetupAttachment(RootComponent);
