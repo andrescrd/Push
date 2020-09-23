@@ -6,11 +6,15 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "TimerManager.h"
+#include "PGameInstance.h"
+#include "Engine/World.h"
 
 APGameMode::APGameMode()
 {
     CurrentGameState = EGameState::Unknow;
     MaxNumberOfBots = 3;
+
+    DefaultPawnClass = NULL;
 
     PrimaryActorTick.bStartWithTickEnabled = true;
     PrimaryActorTick.bCanEverTick = true;
@@ -20,6 +24,8 @@ APGameMode::APGameMode()
 void APGameMode::BeginPlay()
 {
     Super::BeginPlay();
+
+    SpawnCharacterSelected();
     SetCurrentGameState(EGameState::Preparing);
 }
 
@@ -67,6 +73,21 @@ void APGameMode::DisableAllCharacterMovement(TArray<class APCharacter *> Charact
     for (int32 i = 0; i < Characters.Num(); i++)
     {
         Characters[i]->GetCharacterMovement()->DisableMovement();
+    }
+}
+
+void APGameMode::SpawnCharacterSelected()
+{
+    if (UPGameInstance *GI = GetWorld()->GetGameInstance<UPGameInstance>())
+    {
+        APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0);
+
+        FActorSpawnParameters Parameters;
+        Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod ::AlwaysSpawn;
+        AActor *CurrentPlayer = FindPlayerStart(nullptr);
+        APCharacter *CurrentCharacter = GetWorld()->SpawnActor<APCharacter>(GI->GetPlayerSetup().CharacterClass, CurrentPlayer->GetTransform(), Parameters);
+
+        PC->Possess(CurrentCharacter);
     }
 }
 

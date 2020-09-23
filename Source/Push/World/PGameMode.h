@@ -44,13 +44,14 @@ protected:
 	bool IsPlayerAlive();
 	void SetCurrentGameState(EGameState NewState);
 	void DisableAllCharacterMovement(TArray<class APCharacter *> Characters);
+	void SpawnCharacterSelected();
 
 	void InitPlayGame();
 
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
+	
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
 	UFUNCTION(BlueprintCallable)
