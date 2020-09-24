@@ -15,9 +15,9 @@ FLevelStruct APLevelManager::GetFirstLavel()
     return Levels[0];
 }
 
-FLevelStruct APLevelManager::GetNextLevel()
-{
-    FName CurrentLevelName = CleanLevelString(GetWorld());
+FLevelStruct APLevelManager::GetNextLevel(UObject *context)
+{    
+    FName CurrentLevelName = CleanLevelString(context);
     FLevelStruct Level;
 
     for (int32 index = 0; index < Levels.Num(); index++)
@@ -32,31 +32,31 @@ FLevelStruct APLevelManager::GetNextLevel()
     return Level;
 }
 
-void APLevelManager::LoadNextLevel()
+void APLevelManager::LoadNextLevel(UObject *context)
 {
-    FLevelStruct NextLevel = GetNextLevel();
+    FLevelStruct NextLevel = GetNextLevel(context);
+    UWorld *World = GEngine->GetWorldFromContextObject(context);
 
     for (int32 index = 0; index < Levels.Num(); index++)
     {
         if (NextLevel.LevelName.IsEqual(Levels[index].LevelName))
         {
-            UGameplayStatics::OpenLevel(GetWorld(), NextLevel.LevelName);
+            UGameplayStatics::OpenLevel(World, NextLevel.LevelName);
             break;
         }
     }
 }
 
-void APLevelManager::LoadLevel(FName LevelNameToLoad)
+void APLevelManager::LoadLevel(UObject *context, FName LevelNameToLoad)
 {
-    // FName FullName = TEXT("Map/");
-    // FullName.AppendString(LevelNameToLoad.ToString());
-    UGameplayStatics::OpenLevel(GetWorld(), LevelNameToLoad, true);
+    UWorld *World = GEngine->GetWorldFromContextObject(context);
+    UGameplayStatics::OpenLevel(World, LevelNameToLoad, true);
 }
 
-
-FName APLevelManager::CleanLevelString(UObject* context)
+FName APLevelManager::CleanLevelString(UObject *context)
 {
-    FString Prefix = GEngine->GetWorldFromContextObject(context)->StreamingLevelsPrefix;
-	FString LevelName = GetWorld()->GetMapName();
-	return FName(*LevelName.RightChop(Prefix.Len()));
+    UWorld *World = GEngine->GetWorldFromContextObject(context);
+    FString Prefix = World->StreamingLevelsPrefix;
+    FString LevelName = World->GetMapName();
+    return FName(*LevelName.RightChop(Prefix.Len()));
 }

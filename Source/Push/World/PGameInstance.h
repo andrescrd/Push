@@ -45,5 +45,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetLevel(int Level);
 
+	UFUNCTION(BlueprintCallable)
 	FPlayerSetup GetPlayerSetup();
 };

@@ -50,13 +50,13 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void LoadLevel(FName LevelNameToLoad);
+	void LoadLevel(class UObject* context,FName LevelNameToLoad);
 	UFUNCTION(BlueprintCallable)
 	TArray<FLevelStruct> GetLevels();
 	UFUNCTION(BlueprintCallable)
 	FLevelStruct GetFirstLavel();
 	UFUNCTION(BlueprintCallable)
-	FLevelStruct GetNextLevel();
+	FLevelStruct GetNextLevel(class UObject* context);
 	UFUNCTION(BlueprintCallable)
-	void LoadNextLevel();
+	void LoadNextLevel(class UObject* context);
 };
