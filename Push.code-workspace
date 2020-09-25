@@ -6,7 +6,7 @@
 		},
 		{
 			"name": "UE4",
-			"path": "C:\\Program Files\\Epic Games\\UE_4.24"
+			"path": "C:\\Program Files\\Epic Games\\UE_4.25"
 		}
 	],
 	"settings": {
@@ -15,7 +15,7 @@
 	"extensions": {
 		"recommendations": [
 			"ms-vscode.cpptools",
-			"ms-vscode.csharp"
+			"ms-dotnettools.csharp"
 		]
 	}
 }
