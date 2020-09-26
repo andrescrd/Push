@@ -10,6 +10,7 @@
 #include "Push/Components/PHealthComponent.h"
 #include "Engine/World.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
 // Sets default values
@@ -87,13 +88,13 @@ void APCharacter::Push()
 	IsPushing = false;
 
 	TArray<AActor *> OverlppedActors;
-	PushZoneComp->GetOverlappingActors(OverlppedActors, ACharacter::StaticClass());
+	PushZoneComp->GetOverlappingActors(OverlppedActors, AActor::StaticClass());
 
 	for (int i = 0; i < OverlppedActors.Num(); i++)
 	{
-		ACharacter *SingleActor = Cast<ACharacter>(OverlppedActors[i]);
+		APCharacter* SingleActor = Cast<APCharacter>(OverlppedActors[i]);
 
-		if (SingleActor != this)
+		if (SingleActor && SingleActor != this)
 		{
 			FRotator Direction = GetActorRotation();
 			Direction.Pitch += 30.f;
@@ -102,6 +103,14 @@ void APCharacter::Push()
 
 			//Call to BP event
 			OnPush(SingleActor);
+		}
+		else if (AActor* OtherActor = Cast<AActor>(OverlppedActors[i]))
+		{
+			if (OtherActor != this)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("attack some actor"));
+				UGameplayStatics::ApplyDamage(OtherActor, 1, GetOwner()->GetInstigatorController(), this, nullptr);
+			}
 		}
 	}
 }
