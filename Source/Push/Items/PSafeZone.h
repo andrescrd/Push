@@ -10,17 +10,21 @@ UCLASS()
 class PUSH_API APSafeZone : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APSafeZone();
 
 protected:
-	// Called when the game starts or when spawned
+	UPROPERTY(VisibleAnywhere)
+	class UBoxComponent *BoxComp;
+
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnActorOverlap(AActor* OtherActor);
 };

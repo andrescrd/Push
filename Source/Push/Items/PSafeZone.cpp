@@ -1,27 +1,42 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "PSafeZone.h"
+#include "Components/BoxComponent.h"
+#include "Push/Characters/PCharacter.h"
+#include "Engine/World.h"
+#include "Push/World/PGameMode.h"
 
 // Sets default values
 APSafeZone::APSafeZone()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
+	BoxComp->InitBoxExtent(FVector(50.f));
+	RootComponent = BoxComp;
 }
 
 // Called when the game starts or when spawned
 void APSafeZone::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-// Called every frame
-void APSafeZone::Tick(float DeltaTime)
+void APSafeZone::NotifyActorBeginOverlap(AActor *OtherActor)
 {
-	Super::Tick(DeltaTime);
+	if (APCharacter *CurrentCharacter = Cast<APCharacter>(OtherActor))
+	{
+		APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
+		GM->AddActorToSafeZone(CurrentCharacter);
 
+		// call bp event
+		OnActorOverlap(OtherActor);
+	}
 }
 
+void APSafeZone::NotifyActorEndOverlap(AActor *OtherActor)
+{
+	if (APCharacter *CurrentCharacter = Cast<APCharacter>(OtherActor))
+	{
+		APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
+		GM->RemoveActorFromSafeZone(CurrentCharacter);
+	}
+}
