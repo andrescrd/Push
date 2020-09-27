@@ -20,10 +20,10 @@ APExplosive::APExplosive()
 
 	RadialComp = CreateAbstractDefaultSubobject<URadialForceComponent>(TEXT("RadialComp"));
 	RadialComp->SetupAttachment(MeshComp);
-	RadialComp->Radius = 250.f;
+	RadialComp->Radius = 250.f;	
 	RadialComp->bImpulseVelChange = true;
 	RadialComp->bAutoActivate = false;
-	RadialComp->bIgnoreOwningActor = false;
+	RadialComp->bIgnoreOwningActor = true;
 
 	HealthComp = CreateDefaultSubobject<UPHealthComponent>(TEXT("HealthComp"));	
 }
