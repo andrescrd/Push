@@ -12,6 +12,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "Push/Items/PProjectile.h"
 
 // Sets default values
 APCharacter::APCharacter()
@@ -50,7 +51,7 @@ void APCharacter::BeginPlay()
 }
 
 // Called to bind functionality to input
-void APCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
+void APCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
@@ -87,35 +88,21 @@ void APCharacter::Push()
 {
 	IsPushing = false;
 
-	TArray<AActor *> OverlppedActors;
-	PushZoneComp->GetOverlappingActors(OverlppedActors, AActor::StaticClass());
-
-	for (int i = 0; i < OverlppedActors.Num(); i++)
+	if (ProjectileClass)
 	{
-		APCharacter* SingleActor = Cast<APCharacter>(OverlppedActors[i]);
+		FActorSpawnParameters Params;
+		Params.Owner = this;
+		Params.Instigator = GetInstigator();
+		APProjectile* Projectile = GetWorld()->SpawnActor<APProjectile>(ProjectileClass, GetActorLocation(), FRotator::ZeroRotator, Params);
 
-		if (SingleActor && SingleActor != this)
+		if (Projectile)
 		{
-			FRotator Direction = GetActorRotation();
-			Direction.Pitch += 30.f;
-			FVector LunchVelocity = Direction.Vector() * PushForce;
-			SingleActor->LaunchCharacter(LunchVelocity, true, true);
-
-			//Call to BP event
-			OnPush(SingleActor);
-		}
-		else if (AActor* OtherActor = Cast<AActor>(OverlppedActors[i]))
-		{
-			if (OtherActor != this)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("attack some actor"));
-				UGameplayStatics::ApplyDamage(OtherActor, 1, GetOwner()->GetInstigatorController(), this, nullptr);
-			}
+			Projectile->Fire(GetActorForwardVector());
 		}
 	}
 }
 
-void APCharacter::HandleHealthDamage(UPHealthComponent *OwnerHealthComp, int Lifes, const class UDamageType *DamageType, class AController *InstigatedBy, AActor *DamageCauser)
+void APCharacter::HandleHealthDamage(UPHealthComponent* OwnerHealthComp, int Lifes, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("character was hurted"));
 
@@ -128,6 +115,23 @@ void APCharacter::HandleHealthDamage(UPHealthComponent *OwnerHealthComp, int Lif
 		//Call to BP event
 		OnDie();
 	}
+}
+
+void APCharacter::StartPosses()
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	PC->SetViewTargetWithBlend(this, 2.f, EViewTargetBlendFunction::VTBlend_Cubic);
+	PC->SetCinematicMode(true, false, false, true, true);
+
+	FTimerHandle TimerHandle_Posses;
+	GetWorldTimerManager().SetTimer(TimerHandle_Posses, this, &APCharacter::DoPosses, 2.f, false);
+}
+
+void APCharacter::DoPosses()
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	PC->Possess(this);
+	PC->SetCinematicMode(false, false, false, true, true);
 }
 
 bool APCharacter::GetIsAlive()
