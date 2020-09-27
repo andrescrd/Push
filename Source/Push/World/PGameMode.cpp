@@ -13,6 +13,7 @@ APGameMode::APGameMode()
 {
     CurrentGameState = EGameState::Unknow;
     MaxNumberOfBots = 3;
+    ActorsInSafeZone = 0;
 
     DefaultPawnClass = NULL;
 
@@ -36,14 +37,34 @@ void APGameMode::Tick(float DeltaTime)
     if (CurrentGameState == EGameState::Preparing)
         return;
 
-    if (!CheckIsAnyCharacterAlive())
+    if (!IsPlayerAlive())
+        SetCurrentGameState(EGameState::GameOver);
+
+    /*   if (!CheckIsAnyCharacterAlive())
     {
         SetCurrentGameState(EGameState::Won);
     }
     else if (!IsPlayerAlive())
     {
         SetCurrentGameState(EGameState::GameOver);
+    }*/
+}
+
+void APGameMode::AddActorToSafeZone(class AActor *OtherActor)
+{
+    if (APCharacter *Character = Cast<APCharacter>(OtherActor))
+    {
+        ActorsInSafeZone++;
+
+        if (GetNumberOfCharacters() == ActorsInSafeZone)
+            SetCurrentGameState(EGameState::Won);
     }
+}
+
+void APGameMode::RemoveActorFromSafeZone(class AActor *OtherActor)
+{
+    if (APCharacter *Character = Cast<APCharacter>(OtherActor))
+        ActorsInSafeZone--;
 }
 
 EGameState APGameMode::GetCurrentGameState() const

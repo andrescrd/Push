@@ -33,6 +33,8 @@ protected:
 	FTimerHandle TimerHandle_InitGame;
 
 	UPROPERTY(BlueprintReadOnly)
+	int32 ActorsInSafeZone;
+	UPROPERTY(BlueprintReadOnly)
 	EGameState CurrentGameState;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 MaxNumberOfBots;
@@ -51,11 +53,15 @@ protected:
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	void AddActorToSafeZone(class AActor* OtherActor);
+	void RemoveActorFromSafeZone(class AActor* OtherActor);
 	
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
 	UFUNCTION(BlueprintCallable)
 	int32 GetNumberOfCharacters();
+	
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnGameStateChange(EGameState NewState);
