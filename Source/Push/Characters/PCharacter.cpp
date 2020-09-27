@@ -26,17 +26,12 @@ APCharacter::APCharacter()
 	SpringComp->SetRelativeRotation(FRotator(-30, 0, 0));
 	SpringComp->bEnableCameraLag = true;
 	SpringComp->bEnableCameraRotationLag = true;
-	SpringComp->CameraLagSpeed = 5.f;
-	SpringComp->CameraRotationLagSpeed = 5.f;
-	SpringComp->TargetArmLength = 800.f;
+	SpringComp->CameraLagSpeed = 3.f;
+	SpringComp->CameraRotationLagSpeed = 3.f;
+	SpringComp->TargetArmLength = 1500.f;
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringComp, USpringArmComponent::SocketName);
-
-	PushZoneComp = CreateDefaultSubobject<UBoxComponent>(TEXT("PushZoneComp"));
-	PushZoneComp->SetBoxExtent(FVector(100.f));
-	PushZoneComp->SetRelativeLocation(FVector(0, 0, 0));
-	PushZoneComp->SetupAttachment(RootComponent);
 
 	HealthComp = CreateDefaultSubobject<UPHealthComponent>(TEXT("HealthComp"));
 }

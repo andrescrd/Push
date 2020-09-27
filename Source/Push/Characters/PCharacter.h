@@ -23,8 +23,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class USpringArmComponent* SpringComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class UBoxComponent* PushZoneComp;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class UPHealthComponent* HealthComp;
 	UPROPERTY(EditDefaultsOnly)
 		TSubclassOf<class APProjectile>  ProjectileClass;

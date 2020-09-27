@@ -178,6 +178,18 @@ void APGameMode::HandleGameState(EGameState NewState)
 
         if (APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0))
             PC->SetCinematicMode(true, false, false, true, true);
+
+        if (SpectatingViewpointClass)
+        {
+            TArray<AActor *> ReturnedActors;
+            UGameplayStatics::GetAllActorsOfClass(this, SpectatingViewpointClass, ReturnedActors);
+
+            AActor *NewViewTarget = nullptr;
+            if (ReturnedActors.Num() > 0)
+                NewViewTarget = ReturnedActors[0];
+
+            GetWorld()->GetFirstPlayerController()->SetViewTargetWithBlend(NewViewTarget, 2.f, EViewTargetBlendFunction::VTBlend_Cubic);
+        }
     }
     break;
 

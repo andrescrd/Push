@@ -37,6 +37,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	EGameState CurrentGameState;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class AActor> SpectatingViewpointClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 MaxNumberOfBots;
 
 	TArray<class APCharacter *> AllCharacters;
