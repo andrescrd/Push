@@ -13,6 +13,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "Push/Items/PProjectile.h"
+#include "DrawDebugHelpers.h"
+#include "Engine/Engine.h"
 
 // Sets default values
 APCharacter::APCharacter()
@@ -20,6 +22,7 @@ APCharacter::APCharacter()
 	RotationVelocity = 45.f;
 	PushForce = 1000.f;
 	IsPushing = false;
+	IsShowingLineTrace = false;
 
 	SpringComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringComp"));
 	SpringComp->SetupAttachment(RootComponent);
@@ -34,6 +37,8 @@ APCharacter::APCharacter()
 	CameraComp->SetupAttachment(SpringComp, USpringArmComponent::SocketName);
 
 	HealthComp = CreateDefaultSubobject<UPHealthComponent>(TEXT("HealthComp"));
+
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
@@ -45,8 +50,45 @@ void APCharacter::BeginPlay()
 		HealthComp->OnHealthChanged.AddDynamic(this, &APCharacter::HandleHealthDamage);
 }
 
+void APCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	if (IsShowingLineTrace)
+		IsShowingLineTrace = false;
+}
+
+void APCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (IsShowingLineTrace)
+	{
+		FHitResult OutHit;
+		FVector Start = GetActorLocation();
+		FVector End = (GetActorForwardVector() * 3000.f) + GetActorLocation();
+
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+		FCollisionResponseParams ResponseParam;
+		ResponseParam.CollisionResponse.SetResponse(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Ignore);
+		GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldDynamic, CollisionParams, ResponseParam);
+
+		if (OutHit.bBlockingHit)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
+
+			DrawDebugLine(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, FColor::Green, false, -1.0, 0, 5);
+		}
+		else
+		{
+			DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, -1.0, 0, 5);
+		}
+	}
+}
+
 // Called to bind functionality to input
-void APCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
@@ -55,6 +97,7 @@ void APCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &APCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Released, this, &APCharacter::StopJumping);
 	PlayerInputComponent->BindAction("Push", EInputEvent::IE_Pressed, this, &APCharacter::StartPush);
+	PlayerInputComponent->BindAction("ShowLine", EInputEvent::IE_Pressed, this, &APCharacter::ShowLineTrace);
 }
 
 void APCharacter::MoveForward(float Value)
@@ -79,6 +122,11 @@ void APCharacter::StartPush()
 	IsPushing = true;
 }
 
+void APCharacter::ShowLineTrace()
+{
+	IsShowingLineTrace = !IsShowingLineTrace;
+}
+
 void APCharacter::Push()
 {
 	IsPushing = false;
@@ -88,7 +136,7 @@ void APCharacter::Push()
 		FActorSpawnParameters Params;
 		Params.Owner = this;
 		Params.Instigator = GetInstigator();
-		APProjectile* Projectile = GetWorld()->SpawnActor<APProjectile>(ProjectileClass, GetActorLocation(), FRotator::ZeroRotator, Params);
+		APProjectile *Projectile = GetWorld()->SpawnActor<APProjectile>(ProjectileClass, GetActorLocation(), FRotator::ZeroRotator, Params);
 
 		if (Projectile)
 		{
@@ -97,7 +145,7 @@ void APCharacter::Push()
 	}
 }
 
-void APCharacter::HandleHealthDamage(UPHealthComponent* OwnerHealthComp, int Lifes, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+void APCharacter::HandleHealthDamage(UPHealthComponent *OwnerHealthComp, int Lifes, const class UDamageType *DamageType, class AController *InstigatedBy, AActor *DamageCauser)
 {
 	UE_LOG(LogTemp, Warning, TEXT("character was hurted"));
 
@@ -114,7 +162,7 @@ void APCharacter::HandleHealthDamage(UPHealthComponent* OwnerHealthComp, int Lif
 
 void APCharacter::StartPosses()
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	APlayerController *PC = GetWorld()->GetFirstPlayerController();
 	PC->SetViewTargetWithBlend(this, 2.f, EViewTargetBlendFunction::VTBlend_Cubic);
 	PC->SetCinematicMode(true, false, false, true, true);
 
@@ -124,7 +172,7 @@ void APCharacter::StartPosses()
 
 void APCharacter::DoPosses()
 {
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	APlayerController *PC = GetWorld()->GetFirstPlayerController();
 	PC->Possess(this);
 	PC->SetCinematicMode(false, false, false, true, true);
 }
