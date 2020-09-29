@@ -78,7 +78,7 @@ void APCharacter::Tick(float DeltaSeconds)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
 
-			DrawDebugLine(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, FColor::Green, false, -1.0, 0, 5);
+			DrawDebugDirectionalArrow(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, 512.f, FColor::Green, false, -1.0, 0, 5);
 		}
 		else
 		{
