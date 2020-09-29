@@ -187,7 +187,7 @@ void APCharacter::CalculateReflectionLineTrace(FVector Start, FVector Normal, AA
 	CollisionParams.AddIgnoredActor(IgnoreActor);
 	FVector Direction = GetActorForwardVector().MirrorByVector(Normal);
 	Direction.Normalize();
-	FVector End = Start + (Direction * 512.f);
+	FVector End = Start + (Direction * 1024.f);
 
 	FHitResult OutHit;
 	GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldDynamic, CollisionParams, ResponseParam);
