@@ -44,6 +44,8 @@ protected:
 	void HandleHealthDamage(class UPHealthComponent *OwnerHealthComp, int Lifes, const class UDamageType *DamageType, class AController *InstigatedBy, AActor *DamageCauser);
 
 	void DoPosses();
+	void CalculateLineTrace();
+	void CalculateReflectionLineTrace(FVector Start, FVector Normal, class AActor* IgnoreActor, FCollisionQueryParams CollisionParams, FCollisionResponseParams ResponseParam);
 
 public:
 	virtual void Tick(float DeltaSeconds) override;

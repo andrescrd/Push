@@ -63,28 +63,7 @@ void APCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	if (IsShowingLineTrace)
-	{
-		FHitResult OutHit;
-		FVector Start = GetActorLocation();
-		FVector End = (GetActorForwardVector() * 3000.f) + GetActorLocation();
-
-		FCollisionQueryParams CollisionParams;
-		CollisionParams.AddIgnoredActor(this);
-		FCollisionResponseParams ResponseParam;
-		ResponseParam.CollisionResponse.SetResponse(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Ignore);
-		GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldDynamic, CollisionParams, ResponseParam);
-
-		if (OutHit.bBlockingHit)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
-
-			DrawDebugDirectionalArrow(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, 512.f, FColor::Green, false, -1.0, 0, 5);
-		}
-		else
-		{
-			DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, -1.0, 0, 5);
-		}
-	}
+		CalculateLineTrace();
 }
 
 // Called to bind functionality to input
@@ -175,6 +154,48 @@ void APCharacter::DoPosses()
 	APlayerController *PC = GetWorld()->GetFirstPlayerController();
 	PC->Possess(this);
 	PC->SetCinematicMode(false, false, false, true, true);
+}
+
+void APCharacter::CalculateLineTrace()
+{
+	FHitResult OutHit;
+	FVector Start = GetActorLocation();
+	FVector End = (GetActorForwardVector() * 3000.f) + GetActorLocation();
+
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	FCollisionResponseParams ResponseParam;
+	ResponseParam.CollisionResponse.SetResponse(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Ignore);
+	GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldDynamic, CollisionParams, ResponseParam);
+
+	if (OutHit.bBlockingHit)
+	{
+		DrawDebugDirectionalArrow(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, 512.f, FColor::Green, false, -1.0, 0, 5);
+		CalculateReflectionLineTrace(OutHit.ImpactPoint, OutHit.Normal, OutHit.GetActor(), CollisionParams, ResponseParam);
+	}
+	else
+	{
+		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, -1.0, 0, 5);
+	}
+}
+
+void APCharacter::CalculateReflectionLineTrace(FVector Start, FVector Normal, AActor *IgnoreActor, FCollisionQueryParams CollisionParams, FCollisionResponseParams ResponseParam)
+{
+	CollisionParams.AddIgnoredActor(IgnoreActor);
+	FVector Direction = GetActorForwardVector().MirrorByVector(Normal);
+	Direction.Normalize();
+	FVector End = Start + (Direction * 246.f);
+
+	FHitResult OutHit;
+	GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldDynamic, CollisionParams, ResponseParam);
+	if (OutHit.bBlockingHit)
+	{
+		DrawDebugDirectionalArrow(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, 512.f, FColor::Green, false, -1.0, 0, 5);
+	}
+	else
+	{
+		DrawDebugDirectionalArrow(GetWorld(), Start, End, 512.f, FColor::Green, false, -1.0, 0, 5);
+	}
 }
 
 bool APCharacter::GetIsAlive()
