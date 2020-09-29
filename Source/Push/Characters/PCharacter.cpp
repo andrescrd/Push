@@ -160,7 +160,7 @@ void APCharacter::CalculateLineTrace()
 {
 	FHitResult OutHit;
 	FVector Start = GetActorLocation();
-	FVector End = (GetActorForwardVector() * 3000.f) + GetActorLocation();
+	FVector End = (GetActorForwardVector() * 4096.f) + GetActorLocation();
 
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
@@ -171,7 +171,10 @@ void APCharacter::CalculateLineTrace()
 	if (OutHit.bBlockingHit)
 	{
 		DrawDebugDirectionalArrow(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, 512.f, FColor::Green, false, -1.0, 0, 5);
-		CalculateReflectionLineTrace(OutHit.ImpactPoint, OutHit.Normal, OutHit.GetActor(), CollisionParams, ResponseParam);
+
+		APCharacter *BlockCharacter = Cast<APCharacter>(OutHit.GetActor());
+		if (BlockCharacter == nullptr)
+			CalculateReflectionLineTrace(OutHit.ImpactPoint, OutHit.Normal, OutHit.GetActor(), CollisionParams, ResponseParam);
 	}
 	else
 	{
@@ -184,7 +187,7 @@ void APCharacter::CalculateReflectionLineTrace(FVector Start, FVector Normal, AA
 	CollisionParams.AddIgnoredActor(IgnoreActor);
 	FVector Direction = GetActorForwardVector().MirrorByVector(Normal);
 	Direction.Normalize();
-	FVector End = Start + (Direction * 246.f);
+	FVector End = Start + (Direction * 512.f);
 
 	FHitResult OutHit;
 	GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldDynamic, CollisionParams, ResponseParam);
