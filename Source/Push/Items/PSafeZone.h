@@ -22,9 +22,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorBeginOverlap(class AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(class AActor* OtherActor) override;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnActorOverlap(AActor* OtherActor);
+	void OnOverlap(class AActor* OtherActor);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnEndOverlap(class AActor* OtherActor);
 };

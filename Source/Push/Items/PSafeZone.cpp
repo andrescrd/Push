@@ -28,7 +28,7 @@ void APSafeZone::NotifyActorBeginOverlap(AActor *OtherActor)
 		GM->AddActorToSafeZone(CurrentCharacter);
 
 		// call bp event
-		OnActorOverlap(OtherActor);
+		OnOverlap(OtherActor);
 	}
 }
 
@@ -38,5 +38,8 @@ void APSafeZone::NotifyActorEndOverlap(AActor *OtherActor)
 	{
 		APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
 		GM->RemoveActorFromSafeZone(CurrentCharacter);
+
+		// call bp event
+		OnEndOverlap(OtherActor);
 	}
 }
