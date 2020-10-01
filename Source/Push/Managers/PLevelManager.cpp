@@ -5,6 +5,13 @@
 #include "Engine/World.h"
 #include "Engine/Engine.h"
 
+
+APLevelManager::APLevelManager() 
+{
+    
+}
+
+
 TArray<FLevelStruct> APLevelManager::GetLevels()
 {
     return Levels;

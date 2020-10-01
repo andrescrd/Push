@@ -2,18 +2,21 @@
 
 #include "PGameInstance.h"
 #include "Push/Managers/PLevelManager.h"
+#include "Push/Managers/PSaveGameManager.h"
 
 void UPGameInstance::Init()
 {
     Super::Init();
+}
 
-    if (LevelManagerClass)
-        LevelManager = NewObject<APLevelManager>(this, LevelManagerClass, TEXT("LevelManager"));
+class UPSaveGameManager *UPGameInstance::SavegameManager()
+{
+    return IsValid(SavegameManagerInstance) ? SavegameManagerInstance : SavegameManagerInstance = NewObject<UPSaveGameManager>(this, FName("SavegameManager"));
 }
 
 class APLevelManager *UPGameInstance::GetLevelManager() const
 {
-    return LevelManager;
+    return IsValid(LevelManager) ? LevelManager :  LevelManager = NewObject<APLevelManager>(this, LevelManagerClass, TEXT("LevelManager"));
 }
 
 void UPGameInstance::SetPlayerClass(TSubclassOf<APCharacter> CharacterClass)
@@ -26,7 +29,7 @@ void UPGameInstance::SetLevel(int Level)
     PlayerSetup.Level = Level;
 }
 
-FPlayerSetup UPGameInstance::GetPlayerSetup() 
+FPlayerSetup UPGameInstance::GetPlayerSetup()
 {
     return PlayerSetup;
 }

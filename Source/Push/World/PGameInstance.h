@@ -37,7 +37,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FPlayerSetup PlayerSetup;
 
+    UPROPERTY(Transient)
+     class UPSaveGameManager *SavegameManagerInstance;
 public:
+UFUNCTION(BlueprintCallable)
+class UPSaveGameManager *SavegameManager();
 	UFUNCTION(BlueprintCallable)
 	class APLevelManager *GetLevelManager() const;
 	UFUNCTION(BlueprintCallable)
