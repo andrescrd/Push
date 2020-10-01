@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
 #include "Push/Managers/PLevelManager.h"
-#include "PSaveGameManager.generated.h"
+#include "PSaveGame.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PUSH_API UPSaveGameManager : public USaveGame
+class PUSH_API UPSaveGame : public USaveGame
 {
 	GENERATED_BODY()
 
 public:
-	UPSaveGameManager();
+	UPSaveGame();
 
 	UPROPERTY(VisibleAnywhere, Category = Basic)
 	TArray<FLevelStruct> Levels;
