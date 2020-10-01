@@ -3,20 +3,38 @@
 #include "PGameInstance.h"
 #include "Push/Managers/PLevelManager.h"
 #include "Push/Managers/PSaveGameManager.h"
+#include "Kismet/GameplayStatics.h"
 
 void UPGameInstance::Init()
 {
     Super::Init();
+
+    if (LevelManagerClass)
+        LevelManagerInstance = NewObject<APLevelManager>(this, LevelManagerClass, TEXT("LevelManager"));
+
+    if (LevelManagerInstance)
+    {
+        UPSaveGameManager *LoadedGame = Cast<UPSaveGameManager>(UGameplayStatics::LoadGameFromSlot(GetSaveGameManager()->SaveSlotName, GetSaveGameManager()->UserIndex));
+        if(LoadedGame->Levels.Num() > 0)
+            LevelManagerInstance->SetLevels(LoadedGame->Levels);
+    }
 }
 
-class UPSaveGameManager *UPGameInstance::SavegameManager()
+void UPGameInstance::Shutdown() 
+{
+    GetSaveGameManager()->Levels = LevelManagerInstance->GetLevels();
+    UGameplayStatics::SaveGameToSlot(GetSaveGameManager(), GetSaveGameManager()->SaveSlotName, GetSaveGameManager()->UserIndex);
+}
+
+
+class UPSaveGameManager *UPGameInstance::GetSaveGameManager()
 {
     return IsValid(SavegameManagerInstance) ? SavegameManagerInstance : SavegameManagerInstance = NewObject<UPSaveGameManager>(this, FName("SavegameManager"));
 }
 
 class APLevelManager *UPGameInstance::GetLevelManager() const
 {
-    return IsValid(LevelManager) ? LevelManager :  LevelManager = NewObject<APLevelManager>(this, LevelManagerClass, TEXT("LevelManager"));
+    return IsValid(LevelManagerInstance) ? LevelManagerInstance : nullptr;
 }
 
 void UPGameInstance::SetPlayerClass(TSubclassOf<APCharacter> CharacterClass)

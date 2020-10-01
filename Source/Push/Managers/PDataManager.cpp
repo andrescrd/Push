@@ -18,6 +18,8 @@ TArray<FLevelStruct> APDataManager::GetLevels()
         GEngine->AddOnScreenDebugMessage(0, 0.f, FColor::Red, FString::Printf(TEXT("Game Loaded")));
         return LoadedGame->Levels;
     }
+
+    return TArray<FLevelStruct>::TArray();
 }
 
 void APDataManager::ClearData()
@@ -27,5 +29,5 @@ void APDataManager::ClearData()
 
 class UPSaveGameManager *APDataManager::GetSaveGameInstance()
 {
-    return IsValid(SaveGameInstance) ? SaveGameInstance : SaveGameInstance = Cast<UPSaveGameManager>(UGameplayStatics::CreateSaveGameObject(UPSaveGameManager::StaticClass());
+    return IsValid(SaveGameInstance) ? SaveGameInstance : SaveGameInstance = Cast<UPSaveGameManager>(UGameplayStatics::CreateSaveGameObject(UPSaveGameManager::StaticClass()));
 }

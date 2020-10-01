@@ -28,27 +28,30 @@ class PUSH_API UPGameInstance : public UGameInstance
 
 public:
 	virtual void Init() override;
+		virtual void Shutdown() override;
+
 
 protected:
-	class APLevelManager *LevelManager;
+	UPROPERTY(Transient)
+	class APLevelManager *LevelManagerInstance;
+	UPROPERTY(Transient)
+	class UPSaveGameManager *SavegameManagerInstance;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class APLevelManager> LevelManagerClass;
 	UPROPERTY(EditAnywhere)
 	FPlayerSetup PlayerSetup;
 
-    UPROPERTY(Transient)
-     class UPSaveGameManager *SavegameManagerInstance;
 public:
-UFUNCTION(BlueprintCallable)
-class UPSaveGameManager *SavegameManager();
+	UFUNCTION(BlueprintCallable)
+	class UPSaveGameManager *GetSaveGameManager();
 	UFUNCTION(BlueprintCallable)
 	class APLevelManager *GetLevelManager() const;
+	
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerClass(TSubclassOf<class APCharacter> CharacterClass);
 	UFUNCTION(BlueprintCallable)
 	void SetLevel(int Level);
-
 	UFUNCTION(BlueprintCallable)
 	FPlayerSetup GetPlayerSetup();
 };

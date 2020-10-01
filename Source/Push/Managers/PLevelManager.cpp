@@ -48,6 +48,7 @@ void APLevelManager::LoadNextLevel(UObject *context)
     {
         if (NextLevel.LevelName.IsEqual(Levels[index].LevelName))
         {
+            Levels[index].State = ELevelState ::Unlocked;
             UGameplayStatics::OpenLevel(World, NextLevel.LevelName);
             break;
         }
@@ -66,4 +67,9 @@ FName APLevelManager::CleanLevelString(UObject *context)
     FString Prefix = World->StreamingLevelsPrefix;
     FString LevelName = World->GetMapName();
     return FName(*LevelName.RightChop(Prefix.Len()));
+}
+
+void APLevelManager::SetLevels(TArray<FLevelStruct> NewLevels) 
+{
+    Levels = NewLevels;
 }

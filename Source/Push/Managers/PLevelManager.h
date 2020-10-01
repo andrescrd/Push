@@ -52,6 +52,8 @@ protected:
 	TArray<FLevelStruct> Levels;
 
 public:
+	void SetLevels(TArray<FLevelStruct> NewLevels);
+
 	UFUNCTION(BlueprintCallable)
 	void LoadLevel(class UObject* context,FName LevelNameToLoad);
 	UFUNCTION(BlueprintCallable)
