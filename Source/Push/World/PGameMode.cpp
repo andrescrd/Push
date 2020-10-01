@@ -39,15 +39,6 @@ void APGameMode::Tick(float DeltaTime)
 
     if (!IsPlayerAlive())
         SetCurrentGameState(EGameState::GameOver);
-
-    /*   if (!CheckIsAnyCharacterAlive())
-    {
-        SetCurrentGameState(EGameState::Won);
-    }
-    else if (!IsPlayerAlive())
-    {
-        SetCurrentGameState(EGameState::GameOver);
-    }*/
 }
 
 void APGameMode::AddActorToSafeZone(class AActor *OtherActor)
@@ -148,7 +139,7 @@ void APGameMode::HandleGameState(EGameState NewState)
         if (APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0))
             PC->SetCinematicMode(true, false, false, true, true);
 
-        GetWorldTimerManager().SetTimer(TimerHandle_InitGame, this, &APGameMode::InitPlayGame, 5.f, false);
+        GetWorldTimerManager().SetTimer(TimerHandle_InitGame, this, &APGameMode::InitPlayGame, 2.f, false);
     }
     break;
     case EGameState::Playing:
