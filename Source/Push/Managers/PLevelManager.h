@@ -39,9 +39,6 @@ class PUSH_API APLevelManager : public AInfo
 {
 	GENERATED_BODY()
 
-public: 
-	APLevelManager();
-
 private:
 	FName CleanLevelString(class UObject *context);
 
