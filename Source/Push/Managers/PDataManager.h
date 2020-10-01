@@ -13,14 +13,14 @@
 UCLASS()
 class PUSH_API APDataManager : public AInfo
 {
-	GENERATED_BODY()
-	
+  GENERATED_BODY()
+
 protected:
-	UPROPERTY(VisibleAnywhere)
-	class UPSaveGameManager* SaveGameInstance;
+  UPROPERTY(VisibleAnywhere)
+  class UPSaveGame *SaveGameInstance;
 
-
-class UPSaveGameManager* GetSaveGameInstance();
+  UFUNCTION(BlueprintCallable)
+  class UPSaveGame *GetSaveGameInstance();
 
 public:
   void SaveLevels(TArray<FLevelStruct> LevelsToSave);

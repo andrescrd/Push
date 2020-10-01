@@ -2,7 +2,7 @@
 
 #include "PDataManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "Push/Managers/PSaveGameManager.h"
+#include "Push/Supports/PSaveGame.h"
 #include "Engine.h"
 
 void APDataManager::SaveLevels(TArray<FLevelStruct> LevelsToSave)
@@ -13,7 +13,7 @@ void APDataManager::SaveLevels(TArray<FLevelStruct> LevelsToSave)
 
 TArray<FLevelStruct> APDataManager::GetLevels()
 {
-    if (UPSaveGameManager *LoadedGame = Cast<UPSaveGameManager>(UGameplayStatics::LoadGameFromSlot(GetSaveGameInstance()->SaveSlotName, GetSaveGameInstance()->UserIndex)))
+    if (UPSaveGame *LoadedGame = Cast<UPSaveGame>(UGameplayStatics::LoadGameFromSlot(GetSaveGameInstance()->SaveSlotName, GetSaveGameInstance()->UserIndex)))
     {
         GEngine->AddOnScreenDebugMessage(0, 0.f, FColor::Red, FString::Printf(TEXT("Game Loaded")));
         return LoadedGame->Levels;
@@ -26,8 +26,7 @@ void APDataManager::ClearData()
 {
     GEngine->AddOnScreenDebugMessage(0, 0.f, FColor::Red, FString::Printf(TEXT("Clear Data")));
 }
-
-class UPSaveGameManager *APDataManager::GetSaveGameInstance()
+class UPSaveGame *APDataManager::GetSaveGameInstance()
 {
-    return IsValid(SaveGameInstance) ? SaveGameInstance : SaveGameInstance = Cast<UPSaveGameManager>(UGameplayStatics::CreateSaveGameObject(UPSaveGameManager::StaticClass()));
+    return IsValid(SaveGameInstance) ? SaveGameInstance : SaveGameInstance = Cast<UPSaveGame>(UGameplayStatics::CreateSaveGameObject(UPSaveGame::StaticClass()));
 }
