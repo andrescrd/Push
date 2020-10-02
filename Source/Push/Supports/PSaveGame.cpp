@@ -9,4 +9,5 @@ UPSaveGame::UPSaveGame()
 {
     SaveSlotName = TEXT("PSlot");
     UserIndex = 0;    
+    Levels = TArray<FLevelStruct>();
 }

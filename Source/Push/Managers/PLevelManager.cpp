@@ -51,6 +51,7 @@ void APLevelManager::LoadNextLevel(UObject *context)
 void APLevelManager::LoadLevel(UObject *context, FName LevelNameToLoad)
 {
     UWorld *World = GEngine->GetWorldFromContextObject(context);
+    UE_LOG(LogTemp, Warning, TEXT("Level to load %s"), *LevelNameToLoad.ToString());
     UGameplayStatics::OpenLevel(World, LevelNameToLoad, true);
 }
 
