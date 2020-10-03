@@ -5,6 +5,7 @@
 #include "Push/Characters/PCharacter.h"
 #include "Engine/World.h"
 #include "Push/World/PGameMode.h"
+#include "Engine/Engine.h"
 
 // Sets default values
 APSafeZone::APSafeZone()
@@ -22,24 +23,32 @@ void APSafeZone::BeginPlay()
 
 void APSafeZone::NotifyActorBeginOverlap(AActor *OtherActor)
 {
-	if (APCharacter *CurrentCharacter = Cast<APCharacter>(OtherActor))
+	if (OtherActor->IsA(CharacterClass))
 	{
 		APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
-		GM->AddActorToSafeZone(CurrentCharacter);
+		GM->AddActorToSafeZone(OtherActor);
 
 		// call bp event
 		OnOverlap(OtherActor);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Blue, FString::Printf(TEXT("It is a %s"), *OtherActor->GetName()));
 	}
 }
 
 void APSafeZone::NotifyActorEndOverlap(AActor *OtherActor)
 {
-	if (APCharacter *CurrentCharacter = Cast<APCharacter>(OtherActor))
+	if (OtherActor->IsA(CharacterClass))
 	{
 		APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
-		GM->RemoveActorFromSafeZone(CurrentCharacter);
+		GM->RemoveActorFromSafeZone(OtherActor);
 
 		// call bp event
 		OnEndOverlap(OtherActor);
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Blue, FString::Printf(TEXT("It is a %s"), *OtherActor->GetName()));
 	}
 }

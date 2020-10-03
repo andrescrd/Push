@@ -18,15 +18,17 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent *BoxComp;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class APCharacter> CharacterClass;
 
 	virtual void BeginPlay() override;
 
 public:
-	virtual void NotifyActorBeginOverlap(class AActor* OtherActor) override;
-	virtual void NotifyActorEndOverlap(class AActor* OtherActor) override;
+	virtual void NotifyActorBeginOverlap(class AActor *OtherActor) override;
+	virtual void NotifyActorEndOverlap(class AActor *OtherActor) override;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnOverlap(class AActor* OtherActor);
+	void OnOverlap(class AActor *OtherActor);
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnEndOverlap(class AActor* OtherActor);
+	void OnEndOverlap(class AActor *OtherActor);
 };
