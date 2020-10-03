@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "Engine/Engine.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APMovableWall::APMovableWall()
@@ -29,6 +30,15 @@ void APMovableWall::BeginPlay()
 	ActivatorComp->OnComponentBeginOverlap.AddDynamic(this, &APMovableWall::HandleBeginOverlap);
 	ActivatorComp->OnComponentEndOverlap.AddDynamic(this, &APMovableWall::HandleEndOverlap);
 	SetupTimeline();
+
+	TArray<AActor *> OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APMovableWall::StaticClass(), OutActors);
+
+	for (int32 i = 0; i < OutActors.Num(); i++)
+	{
+		if (OutActors[i] != this)
+			MovableWalls.Add(Cast<APMovableWall>(OutActors[i]));
+	}
 }
 
 void APMovableWall::SetupTimeline()
@@ -72,17 +82,34 @@ void APMovableWall::SetupTimeline()
 		MyTimeline->SetIgnoreTimeDilation(true);
 	}
 }
-
 void APMovableWall::HandleBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
-	if (ACharacter *Character = Cast<ACharacter>(OtherActor))
+	for (int32 i = 0; i < MovableWalls.Num(); i++)
+	{
+		if (MovableWalls[i]->GetIsActive())
+			return;
+	}
+
+	if (OtherActor->IsA(ACharacter::StaticClass()))
+	{
+		IsActive = true;
 		StartMovement();
+	}
 }
 
 void APMovableWall::HandleEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
 {
-	if (ACharacter *Character = Cast<ACharacter>(OtherActor))
+	for (int32 i = 0; i < MovableWalls.Num(); i++)
+	{
+		if (MovableWalls[i]->GetIsActive())
+			return;
+	}
+
+	if (OtherActor->IsA(ACharacter::StaticClass()))
+	{
+		IsActive = false;
 		ReverseMovement();
+	}
 }
 
 void APMovableWall::OnTimelineFloatReturn(float Value)
@@ -108,4 +135,9 @@ void APMovableWall::ReverseMovement()
 {
 	if (Curve)
 		MyTimeline->Reverse();
+}
+
+bool APMovableWall::GetIsActive()
+{
+	return IsActive;
 }

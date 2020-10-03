@@ -28,7 +28,9 @@ public:
 	APMovableWall();
 
 protected:
+	bool IsActive;
 	TArray<FDataWall> ActorsToMove;
+	TArray<class APMovableWall *> MovableWalls;
 
 	virtual void BeginPlay() override;
 
@@ -48,6 +50,8 @@ public:
 	class UCurveFloat *Curve;
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 	float ZOffset;
+
+	bool GetIsActive();
 
 	UFUNCTION()
 	void HandleBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
