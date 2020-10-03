@@ -15,11 +15,11 @@ APMovableWall::APMovableWall()
 	USceneComponent *Dummy = CreateDefaultSubobject<USceneComponent>(TEXT("Dummy"));
 	RootComponent = Dummy;
 
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
-	MeshComp->SetupAttachment(RootComponent);
+	GroupComp = CreateDefaultSubobject<USceneComponent>(TEXT("GroupComp"));
+	GroupComp->SetupAttachment(RootComponent);
 
-	InverseMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InverseMeshComp"));
-	InverseMeshComp->SetupAttachment(RootComponent);
+	InverseGroupComp = CreateDefaultSubobject<USceneComponent>(TEXT("InverseGroupComp"));
+	InverseGroupComp->SetupAttachment(RootComponent);
 
 	ActivatorComp = CreateDefaultSubobject<UBoxComponent>(TEXT("ActivatorComp"));
 	ActivatorComp->SetupAttachment(RootComponent);
@@ -50,13 +50,13 @@ void APMovableWall::SetupTimeline()
 		MyTimeline->AddInterpFloat(Curve, InterpFunction, FName("Alpha"));
 		MyTimeline->SetTimelineFinishedFunc(TimelineFinished);
 
-		StartLocation =MeshComp->GetRelativeLocation();
+		StartLocation = GroupComp->GetRelativeLocation();
 		EndLocation = StartLocation;
 		EndLocation.Z += ZOffset;
 
-		InverseStartLocation = InverseMeshComp->GetRelativeLocation();
+		InverseStartLocation = InverseGroupComp->GetRelativeLocation();
 		InverseEndLocation = InverseStartLocation;
-		InverseEndLocation.Z  -= ZOffset;
+		InverseEndLocation.Z -= ZOffset;
 
 		MyTimeline->SetLooping(false);
 		MyTimeline->SetIgnoreTimeDilation(true);
@@ -65,20 +65,20 @@ void APMovableWall::SetupTimeline()
 
 void APMovableWall::HandleBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
-	if (ACharacter* Character = Cast<ACharacter>(OtherActor))
+	if (ACharacter *Character = Cast<ACharacter>(OtherActor))
 		StartMovement();
 }
 
 void APMovableWall::HandleEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
 {
-	if (ACharacter* Character = Cast<ACharacter>(OtherActor))
+	if (ACharacter *Character = Cast<ACharacter>(OtherActor))
 		ReverseMovement();
 }
 
 void APMovableWall::OnTimelineFloatReturn(float Value)
 {
-	MeshComp->SetRelativeLocation(FMath::Lerp(StartLocation, EndLocation, Value));
-	InverseMeshComp->SetRelativeLocation(FMath::Lerp(InverseStartLocation, InverseEndLocation, Value));
+	GroupComp->SetRelativeLocation(FMath::Lerp(StartLocation, EndLocation, Value));
+	InverseGroupComp->SetRelativeLocation(FMath::Lerp(InverseStartLocation, InverseEndLocation, Value));
 }
 
 void APMovableWall::OnTimelineFinished()

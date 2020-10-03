@@ -24,13 +24,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UStaticMeshComponent *MeshComp;
+	class USceneComponent *GroupComp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UStaticMeshComponent *InverseMeshComp;
+	class USceneComponent *InverseGroupComp;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UTimelineComponent *MyTimeline;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)	
-	class UBoxComponent * ActivatorComp;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UBoxComponent *ActivatorComp;
 
 	void SetupTimeline();
 
@@ -41,9 +41,9 @@ public:
 	float ZOffset;
 
 	UFUNCTION()
-	void HandleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	void HandleBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 	UFUNCTION()
-	void HandleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void HandleEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
 	UFUNCTION()
 	void OnTimelineFloatReturn(float Value);
 	UFUNCTION()
