@@ -15,12 +15,6 @@ APMovableWall::APMovableWall()
 	USceneComponent *Dummy = CreateDefaultSubobject<USceneComponent>(TEXT("Dummy"));
 	RootComponent = Dummy;
 
-	GroupComp = CreateDefaultSubobject<USceneComponent>(TEXT("GroupComp"));
-	GroupComp->SetupAttachment(RootComponent);
-
-	InverseGroupComp = CreateDefaultSubobject<USceneComponent>(TEXT("InverseGroupComp"));
-	InverseGroupComp->SetupAttachment(RootComponent);
-
 	ActivatorComp = CreateDefaultSubobject<UBoxComponent>(TEXT("ActivatorComp"));
 	ActivatorComp->SetupAttachment(RootComponent);
 
@@ -50,13 +44,29 @@ void APMovableWall::SetupTimeline()
 		MyTimeline->AddInterpFloat(Curve, InterpFunction, FName("Alpha"));
 		MyTimeline->SetTimelineFinishedFunc(TimelineFinished);
 
-		StartLocation = GroupComp->GetRelativeLocation();
-		EndLocation = StartLocation;
-		EndLocation.Z += ZOffset;
+		for (int32 i = 0; i < GroupComp.Num(); i++)
+		{
+			FDataWall Moveable;
+			Moveable.ActorToMove = GroupComp[i];
+			Moveable.StartPosition = GroupComp[i]->GetActorLocation();
+			FVector EndLocation = Moveable.StartPosition;
+			EndLocation.Z += ZOffset;
+			Moveable.EndPosition = EndLocation;
+			Moveable.ActorToMove = GroupComp[i];
+			ActorsToMove.Add(Moveable);
+		}
 
-		InverseStartLocation = InverseGroupComp->GetRelativeLocation();
-		InverseEndLocation = InverseStartLocation;
-		InverseEndLocation.Z -= ZOffset;
+		for (int32 i = 0; i < InverseGroupComp.Num(); i++)
+		{
+			FDataWall InverseMoveable;
+			InverseMoveable.ActorToMove = InverseGroupComp[i];
+			InverseMoveable.StartPosition = InverseGroupComp[i]->GetActorLocation();
+			FVector EndLocation = InverseMoveable.StartPosition;
+			EndLocation.Z -= ZOffset;
+			InverseMoveable.EndPosition = EndLocation;
+			InverseMoveable.ActorToMove = InverseGroupComp[i];
+			ActorsToMove.Add(InverseMoveable);
+		}
 
 		MyTimeline->SetLooping(false);
 		MyTimeline->SetIgnoreTimeDilation(true);
@@ -77,8 +87,10 @@ void APMovableWall::HandleEndOverlap(UPrimitiveComponent *OverlappedComponent, A
 
 void APMovableWall::OnTimelineFloatReturn(float Value)
 {
-	GroupComp->SetRelativeLocation(FMath::Lerp(StartLocation, EndLocation, Value));
-	InverseGroupComp->SetRelativeLocation(FMath::Lerp(InverseStartLocation, InverseEndLocation, Value));
+	for (int32 i = 0; i < ActorsToMove.Num(); i++)
+	{
+		ActorsToMove[i].ActorToMove->SetActorLocation(FMath::Lerp(ActorsToMove[i].StartPosition, ActorsToMove[i].EndPosition, Value));
+	}
 }
 
 void APMovableWall::OnTimelineFinished()

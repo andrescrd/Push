@@ -6,6 +6,19 @@
 #include "GameFramework/Actor.h"
 #include "PMovableWall.generated.h"
 
+USTRUCT(BlueprintType)
+struct FDataWall
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector StartPosition;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector EndPosition;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class AActor *ActorToMove;
+};
+
 UCLASS()
 class PUSH_API APMovableWall : public AActor
 {
@@ -15,18 +28,14 @@ public:
 	APMovableWall();
 
 protected:
-	FVector StartLocation;
-	FVector EndLocation;
-
-	FVector InverseStartLocation;
-	FVector InverseEndLocation;
+	TArray<FDataWall> ActorsToMove;
 
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class USceneComponent *GroupComp;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class USceneComponent *InverseGroupComp;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<class AActor *> GroupComp;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<class AActor *> InverseGroupComp;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UTimelineComponent *MyTimeline;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
