@@ -18,10 +18,15 @@ protected:
 	FVector StartLocation;
 	FVector EndLocation;
 
+	FVector InverseStartLocation;
+	FVector InverseEndLocation;
+
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UStaticMeshComponent *MeshComp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class UStaticMeshComponent *InverseMeshComp;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UTimelineComponent *MyTimeline;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)	

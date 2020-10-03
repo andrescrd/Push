@@ -18,6 +18,9 @@ APMovableWall::APMovableWall()
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	MeshComp->SetupAttachment(RootComponent);
 
+	InverseMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("InverseMeshComp"));
+	InverseMeshComp->SetupAttachment(RootComponent);
+
 	ActivatorComp = CreateDefaultSubobject<UBoxComponent>(TEXT("ActivatorComp"));
 	ActivatorComp->SetupAttachment(RootComponent);
 
@@ -51,6 +54,10 @@ void APMovableWall::SetupTimeline()
 		EndLocation = StartLocation;
 		EndLocation.Z += ZOffset;
 
+		InverseStartLocation = InverseMeshComp->GetRelativeLocation();
+		InverseEndLocation = InverseStartLocation;
+		InverseEndLocation.Z  -= ZOffset;
+
 		MyTimeline->SetLooping(false);
 		MyTimeline->SetIgnoreTimeDilation(true);
 	}
@@ -71,6 +78,7 @@ void APMovableWall::HandleEndOverlap(UPrimitiveComponent *OverlappedComponent, A
 void APMovableWall::OnTimelineFloatReturn(float Value)
 {
 	MeshComp->SetRelativeLocation(FMath::Lerp(StartLocation, EndLocation, Value));
+	InverseMeshComp->SetRelativeLocation(FMath::Lerp(InverseStartLocation, InverseEndLocation, Value));
 }
 
 void APMovableWall::OnTimelineFinished()
