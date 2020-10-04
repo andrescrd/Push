@@ -19,7 +19,8 @@ TArray<FLevelStruct> APDataManager::GetLevels()
         return LoadedGame->Levels;
     }
 
-    return TArray<FLevelStruct>::TArray();
+    TArray<FLevelStruct> Empty;
+    return Empty;
 }
 
 void APDataManager::ClearData()
