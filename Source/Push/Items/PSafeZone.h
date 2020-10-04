@@ -19,7 +19,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent *BoxComp;
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class APCharacter> CharacterClass;
+	TArray<TSubclassOf<class APCharacter>> CharacterClass;
 
 	virtual void BeginPlay() override;
 

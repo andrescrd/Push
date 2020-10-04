@@ -23,32 +23,34 @@ void APSafeZone::BeginPlay()
 
 void APSafeZone::NotifyActorBeginOverlap(AActor *OtherActor)
 {
-	if (OtherActor->IsA(CharacterClass))
+	for (int32 i = 0; i < CharacterClass.Num(); i++)
 	{
-		APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
-		GM->AddActorToSafeZone(OtherActor);
+		if (OtherActor->IsA(CharacterClass[i]))
+		{
+			APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
+			GM->AddActorToSafeZone(OtherActor);
 
-		// call bp event
-		OnOverlap(OtherActor);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Blue, FString::Printf(TEXT("It is a %s"), *OtherActor->GetName()));
+			// call bp event
+			OnOverlap(OtherActor);
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Blue, FString::Printf(TEXT("It is a %s"), *OtherActor->GetName()));
+		}
 	}
 }
 
 void APSafeZone::NotifyActorEndOverlap(AActor *OtherActor)
 {
-	if (OtherActor->IsA(CharacterClass))
+	for (int32 i = 0; i < CharacterClass.Num(); i++)
 	{
-		APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
-		GM->RemoveActorFromSafeZone(OtherActor);
+		if (OtherActor->IsA(CharacterClass[i]))
+		{
+			APGameMode *GM = GetWorld()->GetAuthGameMode<APGameMode>();
+			GM->RemoveActorFromSafeZone(OtherActor);
 
-		// call bp event
-		OnEndOverlap(OtherActor);
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Blue, FString::Printf(TEXT("It is a %s"), *OtherActor->GetName()));
+			// call bp event
+			OnEndOverlap(OtherActor);
+		}	
 	}
 }
