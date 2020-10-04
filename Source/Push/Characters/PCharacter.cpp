@@ -15,6 +15,7 @@
 #include "Push/Items/PProjectile.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
+#include "Components/LineBatchComponent.h"
 
 // Sets default values
 APCharacter::APCharacter()
@@ -142,11 +143,11 @@ void APCharacter::HandleHealthDamage(UPHealthComponent *OwnerHealthComp, int Lif
 void APCharacter::StartPosses()
 {
 	APlayerController *PC = GetWorld()->GetFirstPlayerController();
-	PC->SetViewTargetWithBlend(this, 2.f, EViewTargetBlendFunction::VTBlend_Cubic);
+	PC->SetViewTargetWithBlend(this, 1.5f, EViewTargetBlendFunction::VTBlend_Cubic);
 	PC->SetCinematicMode(true, false, false, true, true);
 
 	FTimerHandle TimerHandle_Posses;
-	GetWorldTimerManager().SetTimer(TimerHandle_Posses, this, &APCharacter::DoPosses, 2.f, false);
+	GetWorldTimerManager().SetTimer(TimerHandle_Posses, this, &APCharacter::DoPosses, 1.5f, false);
 }
 
 void APCharacter::DoPosses()
@@ -170,7 +171,8 @@ void APCharacter::CalculateLineTrace()
 
 	if (OutHit.bBlockingHit)
 	{
-		DrawDebugDirectionalArrow(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, 512.f, FColor::Green, false, -1.0, 0, 5);
+		GetWorld()->LineBatcher->DrawLine(OutHit.TraceStart, OutHit.ImpactPoint, FLinearColor::Green, 0, 5, -1.0);
+		GetWorld()->LineBatcher->DrawPoint(OutHit.ImpactPoint,FLinearColor::Green, 5.f,0, -1.0);
 
 		APCharacter *BlockCharacter = Cast<APCharacter>(OutHit.GetActor());
 		if (BlockCharacter == nullptr)
@@ -178,7 +180,7 @@ void APCharacter::CalculateLineTrace()
 	}
 	else
 	{
-		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, -1.0, 0, 5);
+		GetWorld()->LineBatcher->DrawLine(Start, End, FLinearColor::Green, 0, 5, -1.0);
 	}
 }
 
@@ -193,11 +195,12 @@ void APCharacter::CalculateReflectionLineTrace(FVector Start, FVector Normal, AA
 	GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECollisionChannel::ECC_WorldDynamic, CollisionParams, ResponseParam);
 	if (OutHit.bBlockingHit)
 	{
-		DrawDebugDirectionalArrow(GetWorld(), OutHit.TraceStart, OutHit.ImpactPoint, 512.f, FColor::Green, false, -1.0, 0, 5);
+		GetWorld()->LineBatcher->DrawLine(OutHit.TraceStart, OutHit.ImpactPoint, FLinearColor::Green, 0, 5, -1.0);
+		GetWorld()->LineBatcher->DrawPoint(OutHit.ImpactPoint,FLinearColor::Green, 5.f,0, -1.0);
 	}
 	else
 	{
-		DrawDebugDirectionalArrow(GetWorld(), Start, End, 512.f, FColor::Green, false, -1.0, 0, 5);
+		GetWorld()->LineBatcher->DrawLine(Start, End, FLinearColor::Green, 0, 5, -1.0);
 	}
 }
 
