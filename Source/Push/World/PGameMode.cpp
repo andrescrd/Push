@@ -25,8 +25,6 @@ APGameMode::APGameMode()
 void APGameMode::BeginPlay()
 {
     Super::BeginPlay();
-
-    SpawnCharacterSelected();
     SetCurrentGameState(EGameState::Preparing);
 }
 
@@ -88,40 +86,10 @@ void APGameMode::DisableAllCharacterMovement(TArray<class APCharacter *> Charact
     }
 }
 
-void APGameMode::SpawnCharacterSelected()
-{
-    if (UPGameInstance *GI = GetWorld()->GetGameInstance<UPGameInstance>())
-    {
-        APlayerController *PC = UGameplayStatics::GetPlayerController(this, 0);
-
-        FActorSpawnParameters Parameters;
-        Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod ::AlwaysSpawn;
-        AActor *CurrentPlayer = FindPlayerStart(nullptr);
-        APCharacter *CurrentCharacter = GetWorld()->SpawnActor<APCharacter>(GI->GetPlayerSetup().CharacterClass, CurrentPlayer->GetTransform(), Parameters);
-
-        PC->Possess(CurrentCharacter);
-    }
-}
 
 void APGameMode::InitPlayGame()
 {
     SetCurrentGameState(EGameState::Playing);
-}
-
-bool APGameMode::CheckIsAnyCharacterAlive()
-{
-    bool IsAnyAlive = false;
-
-    for (int32 i = 0; i < AllCharacters.Num(); i++)
-    {
-        if (AllCharacters[i]->GetIsAlive() && !AllCharacters[i]->IsPlayerControlled())
-        {
-            IsAnyAlive = true;
-            break;
-        }
-    }
-
-    return IsAnyAlive;
 }
 
 bool APGameMode::IsPlayerAlive()

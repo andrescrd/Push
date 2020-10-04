@@ -44,11 +44,9 @@ protected:
 	TArray<class APCharacter *> AllCharacters;
 
 	void HandleGameState(EGameState NewState);
-	bool CheckIsAnyCharacterAlive();
 	bool IsPlayerAlive();
 	void SetCurrentGameState(EGameState NewState);
 	void DisableAllCharacterMovement(TArray<class APCharacter *> Characters);
-	void SpawnCharacterSelected();
 
 	void InitPlayGame();
 
