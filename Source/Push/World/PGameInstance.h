@@ -6,18 +6,6 @@
 #include "Engine/GameInstance.h"
 #include "PGameInstance.generated.h"
 
-USTRUCT(BlueprintType)
-struct FPlayerSetup
-{
-	GENERATED_USTRUCT_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class APCharacter> CharacterClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Level;
-};
-
 /**
  * 
  */
@@ -41,19 +29,10 @@ protected:
 	// Player Config
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class APLevelManager> LevelManagerClass;
-	UPROPERTY(EditAnywhere)
-	FPlayerSetup PlayerSetup;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	class APLevelManager *GetLevelManager();
 	UFUNCTION(BlueprintCallable)
 	class APDataManager *GetDataManager();
-
-	UFUNCTION(BlueprintCallable)
-	void SetPlayerClass(TSubclassOf<class APCharacter> CharacterClass);
-	UFUNCTION(BlueprintCallable)
-	void SetLevel(int Level);	
-	UFUNCTION(BlueprintCallable)
-	FPlayerSetup GetPlayerSetup();
 };

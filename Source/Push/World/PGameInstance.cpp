@@ -33,18 +33,3 @@ class APDataManager *UPGameInstance::GetDataManager()
 {
     return IsValid(DataManagerInstance) ? DataManagerInstance : DataManagerInstance = NewObject<APDataManager>(this, FName("DataManager"));
 }
-
-void UPGameInstance::SetPlayerClass(TSubclassOf<APCharacter> CharacterClass)
-{
-    PlayerSetup.CharacterClass = CharacterClass;
-}
-
-void UPGameInstance::SetLevel(int Level)
-{
-    PlayerSetup.Level = Level;
-}
-
-FPlayerSetup UPGameInstance::GetPlayerSetup()
-{
-    return PlayerSetup;
-}
