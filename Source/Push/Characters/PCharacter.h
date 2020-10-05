@@ -70,7 +70,9 @@ public:
 	bool GetIsAlive();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnPush(class ACharacter *ActorPushed);
+	void OnPush();
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnDie();
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnChangePssees();
 };

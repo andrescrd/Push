@@ -43,6 +43,7 @@ void APProjectile::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		if (APCharacter* CharacaterHit = Cast<APCharacter>(OtherActor))
 		{
 			CharacaterHit->StartPosses();
+			Destroy();
 		}
 	}
 }
@@ -55,5 +56,6 @@ void APProjectile::Fire(const FVector Direction)
 
 void APProjectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// call bp event
 	OnProjectileHit(HitLocation);
 }

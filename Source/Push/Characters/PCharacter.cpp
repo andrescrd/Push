@@ -121,6 +121,9 @@ void APCharacter::Push()
 		if (Projectile)
 		{
 			Projectile->Fire(GetActorForwardVector());
+
+			// call bp event
+			OnPush();
 		}
 	}
 }
@@ -148,6 +151,9 @@ void APCharacter::StartPosses()
 
 	FTimerHandle TimerHandle_Posses;
 	GetWorldTimerManager().SetTimer(TimerHandle_Posses, this, &APCharacter::DoPosses, 1.5f, false);
+
+	// call bp event
+	OnChangePssees();
 }
 
 void APCharacter::DoPosses()
@@ -172,7 +178,7 @@ void APCharacter::CalculateLineTrace()
 	if (OutHit.bBlockingHit)
 	{
 		GetWorld()->LineBatcher->DrawLine(OutHit.TraceStart, OutHit.ImpactPoint, FLinearColor::Green, 0, 5, -1.0);
-		GetWorld()->LineBatcher->DrawPoint(OutHit.ImpactPoint,FLinearColor::Green, 5.f,0, -1.0);
+		GetWorld()->LineBatcher->DrawPoint(OutHit.ImpactPoint, FLinearColor::Green, 5.f, 0, -1.0);
 
 		APCharacter *BlockCharacter = Cast<APCharacter>(OutHit.GetActor());
 		if (BlockCharacter == nullptr)
@@ -196,7 +202,7 @@ void APCharacter::CalculateReflectionLineTrace(FVector Start, FVector Normal, AA
 	if (OutHit.bBlockingHit)
 	{
 		GetWorld()->LineBatcher->DrawLine(OutHit.TraceStart, OutHit.ImpactPoint, FLinearColor::Green, 0, 5, -1.0);
-		GetWorld()->LineBatcher->DrawPoint(OutHit.ImpactPoint,FLinearColor::Green, 5.f,0, -1.0);
+		GetWorld()->LineBatcher->DrawPoint(OutHit.ImpactPoint, FLinearColor::Green, 5.f, 0, -1.0);
 	}
 	else
 	{
