@@ -31,4 +31,6 @@ public:
 	void OnOverlap(class AActor *OtherActor);
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnEndOverlap(class AActor *OtherActor);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnInvalidOverlap(class AActor *OtherActor);
 };

@@ -23,6 +23,8 @@ void APSafeZone::BeginPlay()
 
 void APSafeZone::NotifyActorBeginOverlap(AActor *OtherActor)
 {
+	bool IsValid = false;
+
 	for (int32 i = 0; i < CharacterClass.Num(); i++)
 	{
 		if (OtherActor->IsA(CharacterClass[i]))
@@ -32,12 +34,12 @@ void APSafeZone::NotifyActorBeginOverlap(AActor *OtherActor)
 
 			// call bp event
 			OnOverlap(OtherActor);
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(0, 3.f, FColor::Blue, FString::Printf(TEXT("It is a %s"), *OtherActor->GetName()));
+			IsValid = true;
 		}
 	}
+
+	if (CharacterClass.Num() > 0 && !IsValid)
+		OnInvalidOverlap(OtherActor);
 }
 
 void APSafeZone::NotifyActorEndOverlap(AActor *OtherActor)
@@ -51,6 +53,6 @@ void APSafeZone::NotifyActorEndOverlap(AActor *OtherActor)
 
 			// call bp event
 			OnEndOverlap(OtherActor);
-		}	
+		}
 	}
 }
