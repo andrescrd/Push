@@ -94,6 +94,9 @@ void APMovableWall::HandleBeginOverlap(UPrimitiveComponent *OverlappedComponent,
 	{
 		IsActive = true;
 		StartMovement();
+
+		// call bp event
+		OnActivated();
 	}
 }
 

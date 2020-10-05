@@ -67,4 +67,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReverseMovement();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnActivated();
 };
